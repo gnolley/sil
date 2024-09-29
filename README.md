@@ -15,7 +15,7 @@ Build the project using cmake.
 ### Prerequisites    
 LunarG Vulkan SDK
 
-VCPCKG
+VCPKG
 
 ### Visual Studio
 Install Dektop Development with C++ Module.
@@ -25,7 +25,7 @@ Ensure you have the following Options.
 - C++ Cmake tools for Windows
 - Test Adapter for Google Test
 
-### Vcpckg
+### Vcpkg
 Create a CMakeUserPresets.json file to set vcpkg, or set VCPKG_ROOT as an environment variables
 
 ```
