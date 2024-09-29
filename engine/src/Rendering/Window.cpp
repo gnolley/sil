@@ -1,8 +1,8 @@
 #include "Rendering/Window.h"
 
 Sil::Window::Window(std::uint32_t width, std::uint32_t height, std::string name)
+	: _width(width), _height(height)
 {
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	_window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
 }
 

@@ -20,5 +20,6 @@ namespace Sil
 	private:
 		// GLFW Cannot be smart pointer
 		GLFWwindow* _window;
+		std::uint32_t _width, _height;
 	};
 }

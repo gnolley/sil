@@ -1,21 +1,36 @@
 #include "SilEngine.h"
 #include <iostream>
 
-#define GLFW_INCLUDE_VULKAN
+#include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
-Sil::SilEngine::SilEngine(std::uint32_t mainWindowWidth, std::uint32_t mainWindowHeight, std::string mainWindowName)
+Sil::SilEngine::SilEngine(std::uint32_t mainWindowWidth, std::uint32_t mainWindowHeight, std::string applicationName)
 {
 	std::cout << "Initialising Engine. \n";
 
-	// Create Window
-	glfwInit();
-	_mainWindow = std::make_unique<Window>(mainWindowWidth, mainWindowHeight, mainWindowName);
-
-	InitVulkan();
+	CreateMainWindow(mainWindowWidth, mainWindowHeight, applicationName);
+	InitVulkan(applicationName);
 
 	// Initalise Sub Systems
 }
+
+// == Initialisation
+
+void Sil::SilEngine::CreateMainWindow(std::uint32_t mainWindowWidth, std::uint32_t mainWindowHeight, std::string applicationName)
+{
+	// Create Window
+	glfwInit();
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	_mainWindow = std::make_unique<Window>(mainWindowWidth, mainWindowHeight, applicationName);
+}
+
+void Sil::SilEngine::InitVulkan(std::string applicationName)
+{
+	_mainRenderer = std::make_unique<Renderer>(applicationName);
+}
+
+// == Runtime
 
 void Sil::SilEngine::Run()
 {
@@ -23,13 +38,6 @@ void Sil::SilEngine::Run()
 
 	MainLoop();
 	Cleanup();
-}
-
-void Sil::SilEngine::InitVulkan()
-{
-	uint32_t extensionCount = 0;
-	vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
-	std::cout << extensionCount << " extensions supported\n";
 }
 
 void Sil::SilEngine::MainLoop()

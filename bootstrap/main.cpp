@@ -10,7 +10,7 @@ int main()
 	std::cout << "Bootstrapper: " << project_name << " Version " << project_version << ".\n";
 
 	try {
-		Sil::SilEngine engine(800, 600, "Soliloquy");
+		Sil::SilEngine engine(800, 600, std::string(project_name.data()));
 		engine.Run();
 	}
 	catch (const std::exception& err)
