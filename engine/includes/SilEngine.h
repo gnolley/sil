@@ -1,3 +1,7 @@
+#pragma once
+
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
 
 namespace Sil
 {
@@ -5,7 +9,13 @@ namespace Sil
 	public:
 		SilEngine();
 		void Run();
-	private:
 
+	private:
+		// GLFW Cannot be smart pointer
+		GLFWwindow* _window;
+
+		void InitVulkan();
+		void MainLoop();
+		void Cleanup();
 	};
 }
