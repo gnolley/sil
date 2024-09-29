@@ -1,0 +1,24 @@
+#pragma once
+
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+
+#include <cstdint>
+#include <string>
+
+namespace Sil
+{
+	class Window
+	{
+	public:
+		Window(std::uint32_t width, std::uint32_t height, std::string name);
+		~Window();
+
+		bool ShouldWindowClose();
+		bool WindowOpen() { return _window == nullptr; }
+
+	private:
+		// GLFW Cannot be smart pointer
+		GLFWwindow* _window;
+	};
+}
