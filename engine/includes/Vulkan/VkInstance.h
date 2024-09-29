@@ -1,22 +1,27 @@
 #pragma once
 #include <vulkan/vulkan.h>
+#include <stdexcept>
 
 namespace Sil
 {
 	class VkInstance
 	{
 	public:
-		VkInstance(std::string applicationName)
+		VkInstance(const VkInstanceCreateInfo* createInfo)
 		{
-			VkApplicationInfo appInfo{};
-			appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-			appInfo.pApplicationName = applicationName;
-			appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-			appInfo.pEngineName = "Soliloquy";
-			appInfo.engineVersion = VK_MAKE_VERSION(0, 0, 1);
-			appInfo.apiVersion = VK_API_VERSION_1_0;
+			auto result = vkCreateInstance(createInfo, nullptr, &_instance);
+			if (result != VK_SUCCESS)
+			{
+				throw std::runtime_error("Failed to create VkInstance.");
+			}
+		}
+
+		~VkInstance()
+		{
+			vkDestroyInstance(_instance, nullptr);
 		}
 
 	private:
+		::VkInstance _instance;
 	};
 }

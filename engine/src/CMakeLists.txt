@@ -13,3 +13,7 @@ endif()
 if(${ENABLE_LTO})
     target_enable_lto(${ENGINE_SRC_TARGET})
 endif()
+
+if(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
+    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_DEBUG_FLAG})
+endif()

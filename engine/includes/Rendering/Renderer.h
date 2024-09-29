@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+#include <Vulkan/VkInstance.h>
 #include "Config/EngineConfig.h"
 #include "Config/AppConfig.h"
 
@@ -13,6 +14,6 @@ namespace Sil
 		void Cleanup();
 
 	private:
-
+		std::unique_ptr<VkInstance> _instance;
 	};
 }

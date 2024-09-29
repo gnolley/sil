@@ -22,6 +22,7 @@ void Sil::SilEngine::CreateMainWindow(std::uint32_t mainWindowWidth, std::uint32
 	glfwInit();
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
 	_mainWindow = std::make_unique<Window>(mainWindowWidth, mainWindowHeight, applicationName);
 }
 

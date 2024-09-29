@@ -8,6 +8,9 @@
 
 namespace Sil
 {
+	/// <summary>
+	/// RAII Wrapper for GLFWwindow
+	/// </summary>
 	class Window
 	{
 	public:

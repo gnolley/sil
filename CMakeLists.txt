@@ -13,6 +13,8 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 set(ENGINE_SRC_TARGET Sil-Core)
 set(BOOTSTRAP_TARGET Sil-Bootstrapper)
 
+set(SIL_DEBUG_FLAG SIL_DEBUG)
+
 option(BUILD_UNIT_TESTS "Build unit tests with build" OFF)
 option(ENABLE_WARNINGS "Build unit tests with build" ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Build unit tests with build" ON)
