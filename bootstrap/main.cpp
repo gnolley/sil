@@ -1,5 +1,7 @@
 #include "SilEngine.h"
 #include "Config.hpp"
+#include "Config/AppConfig.h"
+#include "Config/EngineConfig.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -9,8 +11,17 @@ int main()
 {
 	std::cout << "Bootstrapper: " << project_name << " Version " << project_version << ".\n";
 
+	const Sil::AppConfig appConfig(
+		std::string("Soliloquy Bootstrapper"), 
+		Sil::Version(1, 0, 0));
+
+	const Sil::EngineConfig engineConfig(
+		Sil::Version(project_version_major, project_version_minor, project_version_patch),
+		800, 600
+	);
+
 	try {
-		Sil::SilEngine engine(800, 600, std::string(project_name.data()));
+		Sil::SilEngine engine(appConfig, engineConfig);
 		engine.Run();
 	}
 	catch (const std::exception& err)

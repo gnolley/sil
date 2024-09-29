@@ -1,6 +1,8 @@
 #pragma once
 #include "Rendering/Window.h"
 #include "Rendering/Renderer.h"
+#include "Config/EngineConfig.h"
+#include "Config/AppConfig.h"
 
 #include <cstdint>
 #include <memory>
@@ -10,7 +12,7 @@ namespace Sil
 {
 	class SilEngine {
 	public:
-		SilEngine(std::uint32_t mainWindowWidth, std::uint32_t mainWindowHeight, std::string applicationName);
+		SilEngine(const AppConfig appConfig, const EngineConfig engineConfig);
 		void Run();
 
 	private:
@@ -18,7 +20,7 @@ namespace Sil
 		std::unique_ptr<Renderer> _mainRenderer;
 
 		void CreateMainWindow(std::uint32_t mainWindowWidth, std::uint32_t mainWindowHeight, std::string applicationName);
-		void InitVulkan(std::string applicationName);
+		void InitVulkan(const AppConfig appConfig, const EngineConfig engineConfig);
 		void MainLoop();
 		void Cleanup();
 	};

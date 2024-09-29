@@ -4,12 +4,12 @@
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
-Sil::SilEngine::SilEngine(std::uint32_t mainWindowWidth, std::uint32_t mainWindowHeight, std::string applicationName)
+Sil::SilEngine::SilEngine(const AppConfig appConfig, const EngineConfig engineConfig)
 {
-	std::cout << "Initialising Engine. \n";
+	std::cout << "Initialising Engine. Version: " << engineConfig.EngineVersion.ToString() << "\n";
 
-	CreateMainWindow(mainWindowWidth, mainWindowHeight, applicationName);
-	InitVulkan(applicationName);
+	CreateMainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName);
+	InitVulkan(appConfig, engineConfig);
 
 	// Initalise Sub Systems
 }
@@ -25,9 +25,9 @@ void Sil::SilEngine::CreateMainWindow(std::uint32_t mainWindowWidth, std::uint32
 	_mainWindow = std::make_unique<Window>(mainWindowWidth, mainWindowHeight, applicationName);
 }
 
-void Sil::SilEngine::InitVulkan(std::string applicationName)
+void Sil::SilEngine::InitVulkan(const AppConfig appConfig, const EngineConfig engineConfig)
 {
-	_mainRenderer = std::make_unique<Renderer>(applicationName);
+	_mainRenderer = std::make_unique<Renderer>(appConfig, engineConfig);
 }
 
 // == Runtime
