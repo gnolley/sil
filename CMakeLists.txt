@@ -23,6 +23,16 @@ option(ENABLE_LTO "Enable Link Time Optimisation" OFF)
 
 include(ConfigSafeGuard)
 
+include(FindVulkan)
+if(${Vulkan_FOUND})
+    message(STATUS "Vulkan Found!")
+else()
+    message(FATAL_ERROR "Could not find vulkan sdk!")
+endif()
+
+include ($ENV{VCPKG_ROOT}\\scripts\\buildsystems\\vcpkg.cmake)
+find_package(glfw3 CONFIG REQUIRED)
+
 if(${ENABLE_WARNINGS})
     include(Warnings)
 endif()

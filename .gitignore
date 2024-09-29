@@ -32,7 +32,6 @@
 *.app
 
 
-
 #Cmake 
 CMakeLists.txt.user
 CMakeCache.txt
@@ -46,5 +45,8 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 CMakeUserPresets.json
-out
+
 .vs
+out
+build
+vcpkg_installed

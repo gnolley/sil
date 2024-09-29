@@ -1,4 +1,11 @@
 {
   "dependencies": [
+    {
+      "name": "glfw3",
+      "version>=": "3.4#0"
+
+    },
+    "vcpkg-cmake",
+    "vcpkg-cmake-config"
   ]
 }

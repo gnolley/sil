@@ -10,13 +10,35 @@ An open source game engine for c++ .
 
 ## Installation
 
-Install my-project with npm
+Build the project using cmake.
 
-#### Prerequisi    
+### Prerequisites    
 LunarG Vulkan SDK
-Install VCPCKG
 
-```bash
-  build with cmake
+VCPCKG
+
+### Visual Studio
+Install Dektop Development with C++ Module.
+Ensure you have the following Options.
+- Windows 10/11 SDK
+- Vcpkg package manager
+- C++ Cmake tools for Windows
+- Test Adapter for Google Test
+
+### Vcpckg
+Create a CMakeUserPresets.json file to set vcpkg, or set VCPKG_ROOT as an environment variables
+
 ```
-    
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "default",
+      "inherits": "vcpkg",
+      "environment": {
+        "VCPKG_ROOT": "C:\\Users\\thoma\\OneDrive\\Documents\\Projects\\vcpkg"
+      }
+    }
+  ]
+}
+```

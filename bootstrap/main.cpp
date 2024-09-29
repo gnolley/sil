@@ -9,4 +9,6 @@ int main()
 
 	Sil::SilEngine engine{};
 	engine.Run();
+
+	return 0;
 }
