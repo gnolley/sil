@@ -1,10 +1,8 @@
 #pragma once
 
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
-
 #include <cstdint>
-#include <string>
+#include <string_view>
 
 namespace Sil
 {
@@ -14,7 +12,7 @@ namespace Sil
 	class Window
 	{
 	public:
-		Window(std::uint32_t width, std::uint32_t height, std::string name);
+		Window(const std::uint32_t& width, const std::uint32_t& height, const std::string_view name);
 		~Window();
 
 		bool ShouldWindowClose();

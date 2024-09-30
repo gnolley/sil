@@ -10,7 +10,7 @@ namespace Sil
 	class Renderer
 	{
 	public:
-		Renderer(const AppConfig appConfig, const EngineConfig engineConfig);
+		Renderer();
 		void Cleanup();
 
 	private:

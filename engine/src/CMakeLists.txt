@@ -1,6 +1,7 @@
 set(SIL_COR_SOURCES
  "SilEngine.cpp"
- "Rendering/Window.cpp" "Rendering/Renderer.cpp")
+ "Rendering/Window.cpp" "Rendering/Renderer.cpp" 
+ "Subsystems/RenderingSubsystem.cpp")
 
 add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES})
 

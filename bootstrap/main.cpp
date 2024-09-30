@@ -12,7 +12,7 @@ int main()
 	std::cout << "Bootstrapper: " << project_name << " Version " << project_version << ".\n";
 
 	const Sil::AppConfig appConfig(
-		std::string("Soliloquy Bootstrapper"), 
+		"Soliloquy Bootstrapper", 
 		Sil::Version(1, 0, 0));
 
 	const Sil::EngineConfig engineConfig(
@@ -21,6 +21,7 @@ int main()
 	);
 
 	try {
+		Sil::InitGraphicsContext();
 		Sil::SilEngine engine(appConfig, engineConfig);
 		engine.Run();
 	}

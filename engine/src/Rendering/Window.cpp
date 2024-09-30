@@ -1,9 +1,10 @@
 #include "Rendering/Window.h"
 
-Sil::Window::Window(std::uint32_t width, std::uint32_t height, std::string name)
+Sil::Window::Window(const std::uint32_t& width, const std::uint32_t& height, const std::string_view name)
 	: _width(width), _height(height)
 {
-	_window = glfwCreateWindow(width, height, name.c_str(), nullptr, nullptr);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	_window = glfwCreateWindow(width, height, name.data(), nullptr, nullptr);
 }
 
 Sil::Window::~Window()

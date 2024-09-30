@@ -1,17 +1,17 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 #include "Version.h"
 
 namespace Sil
 {
 	struct AppConfig
 	{
-		AppConfig(std::string appName, Version version)
+		AppConfig(std::string_view appName, Version version)
 			: ApplicationName(appName), AppVersion(version)
 		{}
 
-		std::string ApplicationName;
+		std::string_view ApplicationName;
 		Version AppVersion;
 	};
 }
