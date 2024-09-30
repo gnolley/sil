@@ -2,14 +2,16 @@
 #include "Config.hpp"
 #include "Config/AppConfig.h"
 #include "Config/EngineConfig.h"
+#include "Debug/Logger.h"
 
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <format>
 
 int main()
 {
-	std::cout << "Bootstrapper: " << project_name << " Version " << project_version << ".\n";
+	Sil::LogMessage(std::format("Bootstrapper: {0}, Version: {1}\n", project_name, project_version));
 
 	const Sil::AppConfig appConfig(
 		"Soliloquy Bootstrapper", 
