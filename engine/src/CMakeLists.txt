@@ -17,4 +17,10 @@ endif()
 
 if(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
     target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_DEBUG_FLAG})
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "RELEASE")
+    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_RELEASE_FLAG})
+endif()
+
+if(${ENABLE_VK_VALIDATION_LAYERS})
+    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${ENABLE_VK_VALIDATION_LAYERS})
 endif()

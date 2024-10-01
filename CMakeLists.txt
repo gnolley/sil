@@ -14,6 +14,8 @@ set(ENGINE_SRC_TARGET Sil-Core)
 set(BOOTSTRAP_TARGET Sil-Bootstrapper)
 
 set(SIL_DEBUG_FLAG SIL_DEBUG)
+set(SIL_RELEASE_FLAG SIL_RELEASE)
+set(SIL_VK_LAYERS_FLAG ENABLE_VK_VALIDATION_LAYERS)
 
 option(BUILD_UNIT_TESTS "Build unit tests with build" OFF)
 option(ENABLE_WARNINGS "Build unit tests with build" ON)
@@ -21,6 +23,8 @@ option(ENABLE_WARNINGS_AS_ERRORS "Build unit tests with build" ON)
 
 option(ENABLE_SANITIZE_ADDR "Enable Address Sanitiser" OFF)
 option(ENABLE_SANITIZE_UNDEF "Enable Undefined Sanitiser" OFF)
+option(ENABLE_VK_VALIDATION_LAYERS "Enable Vulkan Validation Layers" ON)
+
 option(ENABLE_LTO "Enable Link Time Optimisation" OFF)
 
 include(ConfigSafeGuard)

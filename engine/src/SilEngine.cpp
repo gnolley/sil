@@ -10,7 +10,15 @@
 
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
-	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, engineConfig.EngineVersion);
+	std::vector<const char*> validationLayers{};
+#if ENABLE_VK_VALIDATION_LAYERS
+	validationLayers = {
+		"VK_LAYER_KHRONOS_validation"
+	}
+#endif
+
+	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, 
+		engineConfig.EngineVersion, validationLayers);
 }
 
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)
