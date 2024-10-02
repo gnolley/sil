@@ -6,7 +6,7 @@
 #include <iostream>
 
 Sil::RenderSubsystem::RenderSubsystem(RenderConfig config)
-	: _config(config), _appInfo(CreateAppInfo(config)), _instance(GetCreateInfo(_appInfo))
+	: _config(config), _appInfo(CreateAppInfo(config)), _instance(GetCreateInfo(_appInfo, config.ValidationLayers))
 {
 	std::cout << "Init Renderer" << "\n";
 }

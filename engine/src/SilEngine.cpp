@@ -11,9 +11,15 @@
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
 	std::vector<const char*> validationLayers{};
-#if ENABLE_VK_VALIDATION_LAYERS
+#if SIL_ENABLE_GFX_VALIDATION_LAYERS
 	validationLayers = {
-		"VK_LAYER_KHRONOS_validation"
+		"VK_LAYER_KHRONOS_validation",
+	};
+
+	Sil::LogMessage("Validation Layers Enabled:\n");
+	for (auto& layer : validationLayers)
+	{
+		Sil::LogMessage(std::format("{0}\n", layer));
 	}
 #endif
 

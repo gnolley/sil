@@ -22,5 +22,5 @@ elseif(${CMAKE_BUILD_TYPE} STREQUAL "RELEASE")
 endif()
 
 if(${ENABLE_VK_VALIDATION_LAYERS})
-    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${ENABLE_VK_VALIDATION_LAYERS})
+    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_VK_LAYERS_FLAG})
 endif()
