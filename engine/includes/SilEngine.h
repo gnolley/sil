@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Subsystems/RenderSubsystem.h"
+#include "Rendering/GraphicsContext.h"
 #include "Rendering/Window.h"
 #include "Config/EngineConfig.h"
 #include "Config/AppConfig.h"
@@ -11,8 +12,6 @@
 
 namespace Sil
 {
-	void InitGraphicsContext();
-
 	class SilEngine {
 	public:
 
@@ -20,6 +19,7 @@ namespace Sil
 		void Run();
 
 	private:
+		GraphicsContext _graphicsContext; // Must be first
 		Window _mainWindow;
 		RenderSubsystem _renderSubsystem;
 

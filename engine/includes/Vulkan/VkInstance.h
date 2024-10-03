@@ -22,6 +22,8 @@ namespace Sil
 			vkDestroyInstance(_instance, nullptr);
 		}
 
+		const ::VkInstance& GetInstance() const { return _instance; }
+
 	private:
 		::VkInstance _instance;
 	};

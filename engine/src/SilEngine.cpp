@@ -10,44 +10,22 @@
 
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
-	std::vector<const char*> validationLayers{};
-#if SIL_ENABLE_GFX_VALIDATION_LAYERS
-	validationLayers = {
-		"VK_LAYER_KHRONOS_validation",
-	};
-
-	Sil::LogMessage("Validation Layers Enabled:\n");
-	for (auto& layer : validationLayers)
-	{
-		Sil::LogMessage(std::format("{0}\n", layer));
-	}
-#endif
-
-	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, 
-		engineConfig.EngineVersion, validationLayers);
+	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, engineConfig.EngineVersion);
 }
 
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)
-	: _mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName),
-	  _renderSubsystem(CreateRenderConfig(appConfig, engineConfig))
+	: _graphicsContext(CreateRenderConfig(appConfig, engineConfig)), 
+		_mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName),
+		_renderSubsystem(_graphicsContext.GetRenderConfig())
 {
-	LogMessage(std::format("Initialising Engine. {0} \n", engineConfig.EngineVersion.ToString()));
-}
-
-void Sil::InitGraphicsContext()
-{
-	// Create Window
-	auto result = glfwInit();
-	assert(result == GLFW_TRUE);
-
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
 }
 
 // == Runtime
 
 void Sil::SilEngine::Run()
 {
-	LogMessage("Running.");
+	LogMessage("Engine Running.");
 
 	MainLoop();
 	Cleanup();

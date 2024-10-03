@@ -17,6 +17,8 @@ set(SIL_DEBUG_FLAG SIL_DEBUG)
 set(SIL_RELEASE_FLAG SIL_RELEASE)
 set(SIL_VK_LAYERS_FLAG SIL_ENABLE_GFX_VALIDATION_LAYERS)
 
+include(ConfigSafeGuard)
+
 option(BUILD_UNIT_TESTS "Build unit tests with build" OFF)
 option(ENABLE_WARNINGS "Build unit tests with build" ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Build unit tests with build" ON)
@@ -27,7 +29,21 @@ option(ENABLE_VK_VALIDATION_LAYERS "Enable Vulkan Validation Layers" ON)
 
 option(ENABLE_LTO "Enable Link Time Optimisation" OFF)
 
-include(ConfigSafeGuard)
+if(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
+
+option(ENABLE_SANITIZE_ADDR "Enable Address Sanitiser" ON)
+option(ENABLE_SANITIZE_UNDEF "Enable Undefined Sanitiser" ON)
+option(ENABLE_VK_VALIDATION_LAYERS "Enable Vulkan Validation Layers" ON)
+
+elseif(${CMAKE_BUILD_TYPE} STREQUAL "RELEASE")
+
+option(ENABLE_SANITIZE_ADDR "Enable Address Sanitiser" OFF)
+option(ENABLE_SANITIZE_UNDEF "Enable Undefined Sanitiser" OFF)
+option(ENABLE_VK_VALIDATION_LAYERS "Enable Vulkan Validation Layers" OFF)
+
+endif()
+
+
 
 include(FindVulkan)
 if(${Vulkan_FOUND})

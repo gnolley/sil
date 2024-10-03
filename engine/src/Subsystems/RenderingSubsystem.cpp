@@ -1,12 +1,16 @@
 #include "Subsystems/RenderSubsystem.h"
-
-#include "Vulkan/VkInstance.h"
-#include "Vulkan/VkUtils.h"
-
+#include "Debug/Logger.h"
 #include <iostream>
+#include <format>
 
-Sil::RenderSubsystem::RenderSubsystem(RenderConfig config)
-	: _config(config), _appInfo(CreateAppInfo(config)), _instance(GetCreateInfo(_appInfo, config.ValidationLayers))
+Sil::RenderSubsystem::RenderSubsystem(const GraphicsContext& context)
+	: _context(context)
 {
-	std::cout << "Init Renderer" << "\n";
+	LogInfo(std::format("Render Subsystem Initialised. Extensions: {0}, Layers {1}",
+		_context.NumEnabledExtensions(), _context.NumEnabledValidationLayers()));
+
+	if (context.NumEnabledValidationLayers() > 0)
+	{
+		_debugAdaptor.EnableDebugger(&context.GetVkInstance());
+	}
 }

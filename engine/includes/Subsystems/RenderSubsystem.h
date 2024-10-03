@@ -2,17 +2,18 @@
 
 #include "Config/RenderConfig.h"
 #include "Vulkan/VkInstance.h"
+#include "Rendering/GraphicsContext.h"
+#include "Debug/VulkanDebugAdaptor.h"
 
 namespace Sil
 {
 	class RenderSubsystem
 	{
 	public:
-		RenderSubsystem(RenderConfig config);
+		RenderSubsystem(const GraphicsContext& context);
 
 	private:
-		RenderConfig _config;
-		VkApplicationInfo _appInfo;
-		VkInstance _instance;
+		const GraphicsContext& _context;
+		VulkanDebugAdaptor _debugAdaptor;
 	};
 }
