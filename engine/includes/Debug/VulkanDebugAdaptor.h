@@ -8,9 +8,10 @@ namespace Sil
 	class VulkanDebugAdaptor
 	{
 	public:
+		VulkanDebugAdaptor() = default;
 		~VulkanDebugAdaptor();
 
-		void EnableDebugger(const VkInstance* instance);
+		void EnableDebugger(const VkInstance& instance);
 		void DisableDebugger();		
 
 	private:

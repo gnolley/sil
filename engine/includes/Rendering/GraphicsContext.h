@@ -12,21 +12,21 @@ namespace Sil
 	class GraphicsContext
 	{
 	public:
-		GraphicsContext(RenderConfig config);
+		explicit GraphicsContext(const RenderConfig& config);
 
-		const RenderConfig& GetRenderConfig() const { return _config; };
-		const VkInstance& GetVkInstance() const { return _instance; }
+		inline const RenderConfig& GetRenderConfig() const { return _config; };
+		inline const VkInstance& GetVkInstance() const { return _instance; }
 
-		const size_t NumEnabledExtensions() const { return _extensions.size(); }
-		const size_t NumEnabledValidationLayers() const { return _validationLayers.size(); }
+		inline const size_t NumEnabledExtensions() const { return _extensions.size(); }
+		inline const size_t NumEnabledValidationLayers() const { return _validationLayers.size(); }
 
 	private:
 		// should be initialised first.
 		std::vector<const char*> _extensions;
 		std::vector<const char*> _validationLayers;
 
-		RenderConfig _config;
-		VkInstance _instance;
+		const RenderConfig _config;
+		const VkInstance _instance;
 
 		bool AreRequstedLayersSupported(const std::vector<const char*>& layers) const;
 		void PopulateValidationLayersList(std::vector<const char*>& layers) const;

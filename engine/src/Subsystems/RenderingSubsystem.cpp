@@ -11,6 +11,6 @@ Sil::RenderSubsystem::RenderSubsystem(const GraphicsContext& context)
 
 	if (context.NumEnabledValidationLayers() > 0)
 	{
-		_debugAdaptor.EnableDebugger(&context.GetVkInstance());
+		_debugAdaptor.EnableDebugger(context.GetVkInstance());
 	}
 }

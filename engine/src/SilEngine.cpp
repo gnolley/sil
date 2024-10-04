@@ -16,7 +16,7 @@ Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil:
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)
 	: _graphicsContext(CreateRenderConfig(appConfig, engineConfig)), 
 		_mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName),
-		_renderSubsystem(_graphicsContext.GetRenderConfig())
+		_renderSubsystem(_graphicsContext)
 {
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
 }

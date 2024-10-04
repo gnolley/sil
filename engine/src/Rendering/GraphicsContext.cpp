@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cassert>
 
-Sil::GraphicsContext::GraphicsContext(RenderConfig config)
+Sil::GraphicsContext::GraphicsContext(const RenderConfig& config)
 	: _config(config), _instance(GetCreateInfo(CreateAppInfo(_config), _validationLayers, _extensions))
 {
 	// Create Window
@@ -100,6 +100,4 @@ void Sil::GraphicsContext::PopulateValidationLayersList(std::vector<const char*>
 #if SIL_ENABLE_GFX_VALIDATION_LAYERS
 	layers.push_back("VK_LAYER_KHRONOS_validation");
 #endif // SIL_ENABLE_GFX_VALIDATION_LAYERS
-
-
 }
