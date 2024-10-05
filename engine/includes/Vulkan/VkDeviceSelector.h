@@ -5,7 +5,7 @@
 
 namespace Sil
 {
-	static class VkDeviceSelector
+	class VkDeviceSelector
 	{
 	public:
 		static const VkPhysicalDevice SelectDevice(const VkInstance& instance);

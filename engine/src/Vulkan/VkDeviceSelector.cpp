@@ -5,7 +5,6 @@
 
 const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& instance)
 {
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
 	std::uint32_t numDevices;
 	vkEnumeratePhysicalDevices(instance.GetInstance(), &numDevices, nullptr);
@@ -19,9 +18,10 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 	vkEnumeratePhysicalDevices(instance.GetInstance(), &numDevices, devices.data());
 
 	std::vector<std::pair<std::uint32_t, VkPhysicalDevice>> ratedDevices(numDevices);
-	std::generate(devices.begin(), devices.end(), [](auto& device) {
-		return std::pair<std::uint32_t, VkPhysicalDevice>(
-			CalculateDeviceHeuristic(device), device);
+	std::generate(ratedDevices.begin(), ratedDevices.end(), [device = devices.data()]() mutable {
+		auto pair = std::pair<std::uint32_t, VkPhysicalDevice>{ CalculateDeviceHeuristic(*device), *device };
+		++device;
+		return pair;
 	});
 
 	// sort in descending order by rating
@@ -69,8 +69,8 @@ const std::uint32_t Sil::VkDeviceSelector::CalculateDeviceHeuristic(VkPhysicalDe
 		auto heap = memProps.memoryHeaps[i];
 		if ((heap.flags & VK_MEMORY_HEAP_DEVICE_LOCAL_BIT) == VK_MEMORY_HEAP_DEVICE_LOCAL_BIT)
 		{
-			const std::uint32_t BytesPerGB = 1000000000;
-			totalAvailableMemoryGB += heap.size / BytesPerGB;
+			const std::uint64_t BytesPerGB = 1000000000;
+			totalAvailableMemoryGB += static_cast<std::uint32_t>(heap.size / BytesPerGB);
 		}
 	}
 
