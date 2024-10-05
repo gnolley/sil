@@ -27,6 +27,7 @@ namespace Sil
 
 		const RenderConfig _config;
 		const VkInstance _instance;
+		const VkPhysicalDevice _physicalDevice;
 
 		bool AreRequstedLayersSupported(const std::vector<const char*>& layers) const;
 		void PopulateValidationLayersList(std::vector<const char*>& layers) const;
