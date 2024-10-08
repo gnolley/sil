@@ -10,7 +10,8 @@
 
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
-	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, engineConfig.EngineVersion);
+	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, engineConfig.EngineVersion, 
+		Sil::RequiredRenderFeatures(true, false, false));
 }
 
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)

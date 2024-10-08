@@ -3,7 +3,7 @@
 #include <vector>
 #include <algorithm>
 
-const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& instance)
+const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& instance, const RequiredRenderFeatures& features)
 {
 
 	std::uint32_t numDevices;
@@ -18,11 +18,16 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 	vkEnumeratePhysicalDevices(instance.GetInstance(), &numDevices, devices.data());
 
 	std::vector<std::pair<std::uint32_t, VkPhysicalDevice>> ratedDevices(numDevices);
-	std::generate(ratedDevices.begin(), ratedDevices.end(), [device = devices.data()]() mutable {
-		auto pair = std::pair<std::uint32_t, VkPhysicalDevice>{ CalculateDeviceHeuristic(*device), *device };
-		++device;
-		return pair;
-	});
+	for (auto& device : devices)
+	{
+		if (IsDeviceSupported(device, features) == false)
+		{
+			continue;
+		}
+
+		ratedDevices.push_back( std::pair<std::uint32_t, VkPhysicalDevice>
+			{ CalculateDeviceHeuristic(device), device });
+	}
 
 	// sort in descending order by rating
 	std::sort(ratedDevices.begin(), ratedDevices.end(), [](auto& a, auto& b) {
@@ -31,6 +36,43 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 
 	return ratedDevices[0].second;
 }
+
+
+const bool HasFlag(std::vector<VkQueueFamilyProperties>& props, VkQueueFlags bit)
+{
+	return std::any_of(props.begin(), props.end(), [&bit](auto& prop)
+		{
+			return (prop.queueFlags & bit) == bit;
+		});
+}
+
+
+const bool Sil::VkDeviceSelector::IsDeviceSupported(VkPhysicalDevice& device, const RequiredRenderFeatures& features)
+{
+	std::uint32_t numQueueFamilies;
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, nullptr);
+
+	std::vector<VkQueueFamilyProperties> props(numQueueFamilies);
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, props.data());
+
+	if (features.Graphics && HasFlag(props, VK_QUEUE_GRAPHICS_BIT) == false)
+	{
+		return false;
+	}
+
+	if (features.Compute && HasFlag(props, VK_QUEUE_COMPUTE_BIT) == false)
+	{
+		return false;
+	}
+
+	if (features.Transfer && HasFlag(props, VK_QUEUE_TRANSFER_BIT) == false)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 
 /// <summary>
 /// Rates by device type, then total available local memory

@@ -7,7 +7,7 @@
 
 Sil::GraphicsContext::GraphicsContext(const RenderConfig& config)
 	: _config(config), _instance(GetCreateInfo(CreateAppInfo(_config), _validationLayers, _extensions)),
-		_physicalDevice(VkDeviceSelector::SelectDevice(_instance))
+		_physicalDevice(VkDeviceSelector::SelectDevice(_instance, config.RequiredFeatures))
 {
 	// Create Window
 	auto result = glfwInit();
