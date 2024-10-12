@@ -11,7 +11,10 @@ Sil::GraphicsContext::GraphicsContext(const RenderConfig& config)
 {
 	// Create Window
 	auto result = glfwInit();
-	assert(result == GLFW_TRUE);
+	if (result != GLFW_TRUE)
+	{
+		throw std::runtime_error("GLFW could not initialise!");
+	}
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
