@@ -34,6 +34,11 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 		return a.first > b.first;
 	});
 
+	if (ratedDevices.size() == 0)
+	{
+		throw std::runtime_error("Physical hardware not supported!");
+	}
+
 	return ratedDevices[0].second;
 }
 
