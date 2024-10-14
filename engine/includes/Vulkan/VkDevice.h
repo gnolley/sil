@@ -8,6 +8,7 @@ namespace Sil
 	{
 	public:
 		VkDevice(const VkPhysicalDevice& phyicalDevice)
+			: _physicalDevice(phyicalDevice)
 		{
 
 		}
@@ -17,9 +18,7 @@ namespace Sil
 		{
 		}
 
-		const ::VkInstance& GetInstance() const { return _instance; }
-
 	private:
-		::VkInstance _instance;
+		const VkPhysicalDevice& _physicalDevice;
 	};
 }

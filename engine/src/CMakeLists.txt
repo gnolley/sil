@@ -1,9 +1,12 @@
 set(SIL_COR_SOURCES
  "SilEngine.cpp"
  "Rendering/Window.cpp" "Rendering/Renderer.cpp" 
- "Subsystems/RenderingSubsystem.cpp" "Debug/Logger.cpp"  "Rendering/GraphicsContext.cpp" "Debug/VulkanDebugAdaptor.cpp")
+ "Subsystems/RenderingSubsystem.cpp" "Debug/Logger.cpp"  
+ "Rendering/GraphicsContext.cpp" "Debug/VulkanDebugAdaptor.cpp"
+ "Rendering/GraphicsDevice.cpp" "Vulkan/VkDeviceSelector.cpp"
+)
 
-add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES} "Vulkan/VkDeviceSelector.cpp")
+add_library(${ENGINE_SRC_TARGET} SHARED ${SIL_COR_SOURCES})
 
 target_link_libraries(${ENGINE_SRC_TARGET} PUBLIC glfw Vulkan::Vulkan)
 
