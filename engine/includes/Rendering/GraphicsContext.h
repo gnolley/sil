@@ -5,6 +5,7 @@
 
 #include "Config/RenderConfig.h"
 #include "Vulkan/VkInstance.h"
+#include "Rendering/GraphicsDevice.h"
 
 namespace Sil
 {
@@ -27,7 +28,7 @@ namespace Sil
 
 		const RenderConfig _config;
 		const VkInstance _instance;
-		const VkPhysicalDevice _physicalDevice;
+		const GraphicsDevice _device;
 
 		bool AreRequstedLayersSupported(const std::vector<const char*>& layers) const;
 		void PopulateValidationLayersList(std::vector<const char*>& layers) const;

@@ -25,8 +25,7 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 			continue;
 		}
 
-		ratedDevices.push_back( std::pair<std::uint32_t, VkPhysicalDevice>
-			{ CalculateDeviceHeuristic(device), device });
+		ratedDevices.push_back({ CalculateDeviceHeuristic(device), device });
 	}
 
 	// sort in descending order by rating

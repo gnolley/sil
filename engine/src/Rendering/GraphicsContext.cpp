@@ -1,5 +1,4 @@
 #include "Rendering/GraphicsContext.h"
-#include "Vulkan/VkDeviceSelector.h"
 
 #include <GLFW/glfw3.h>
 #include <algorithm>
@@ -7,7 +6,7 @@
 
 Sil::GraphicsContext::GraphicsContext(const RenderConfig& config)
 	: _config(config), _instance(GetCreateInfo(CreateAppInfo(_config), _validationLayers, _extensions)),
-		_physicalDevice(VkDeviceSelector::SelectDevice(_instance, config.RequiredFeatures))
+	_device(_instance, _config.RequiredFeatures)
 {
 	// Create Window
 	auto result = glfwInit();

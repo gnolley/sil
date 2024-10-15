@@ -6,7 +6,7 @@ set(SIL_COR_SOURCES
  "Rendering/GraphicsDevice.cpp" "Vulkan/VkDeviceSelector.cpp"
 )
 
-add_library(${ENGINE_SRC_TARGET} SHARED ${SIL_COR_SOURCES})
+add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES})
 
 target_link_libraries(${ENGINE_SRC_TARGET} PUBLIC glfw Vulkan::Vulkan)
 
