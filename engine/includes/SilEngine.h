@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Rendering/GLFWInstance.h"
 #include "Subsystems/RenderSubsystem.h"
 #include "Rendering/GraphicsContext.h"
 #include "Rendering/Window.h"
@@ -19,7 +20,8 @@ namespace Sil
 		void Run();
 
 	private:
-		GraphicsContext _graphicsContext; // Must be first
+		GLFWInstance _glfwInstance; // Must be before initialising graphics
+		GraphicsContext _graphicsContext;
 		Window _mainWindow;
 		RenderSubsystem _renderSubsystem;
 

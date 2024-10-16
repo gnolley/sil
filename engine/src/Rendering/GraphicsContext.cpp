@@ -8,14 +8,6 @@ Sil::GraphicsContext::GraphicsContext(const RenderConfig& config)
 	: _config(config), _instance(GetCreateInfo(CreateAppInfo(_config), _validationLayers, _extensions)),
 	_device(_instance, _config.RequiredFeatures)
 {
-	// Create Window
-	auto result = glfwInit();
-	if (result != GLFW_TRUE)
-	{
-		throw std::runtime_error("GLFW could not initialise!");
-	}
-
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 }
 
 VkApplicationInfo Sil::GraphicsContext::CreateAppInfo(const RenderConfig& config)

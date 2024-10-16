@@ -2,8 +2,6 @@
 #include "Config/RenderConfig.h"
 #include "Debug/Logger.h"
 
-#include <vulkan/vulkan.h>
-#include <GLFW/glfw3.h>
 #include <iostream>
 #include <cassert>
 #include <format>
@@ -16,7 +14,7 @@ Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil:
 
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)
 	: _graphicsContext(CreateRenderConfig(appConfig, engineConfig)), 
-		_mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName),
+		_mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName, _graphicsContext.GetVkInstance()),
 		_renderSubsystem(_graphicsContext)
 {
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
@@ -35,11 +33,10 @@ void Sil::SilEngine::Run()
 void Sil::SilEngine::MainLoop()
 {
 	while (_mainWindow.ShouldWindowClose() == false) {
-		glfwPollEvents();
+		_glfwInstance.PollEvents();
 	}
 }
 
 void Sil::SilEngine::Cleanup()
 {
-	glfwTerminate(); 
 }
