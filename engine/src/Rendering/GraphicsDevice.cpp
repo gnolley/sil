@@ -5,8 +5,9 @@
 
 std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RequiredRenderFeatures& requiredFeatures);
 
-Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const RequiredRenderFeatures& requiredFeatures)
-	: _physicalDevice(VkDeviceSelector::SelectDevice(instance, requiredFeatures)), _queueIndices(), _queueHandles()
+Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface& surface,
+	const RequiredRenderFeatures& requiredFeatures)
+	: _physicalDevice(VkDeviceSelector::SelectDevice(instance, surface, requiredFeatures)), _queueIndices(), _queueHandles()
 {
 	std::vector<VkDeviceQueueCreateInfo> queues{};
 	GetRequiredQueues(queues, _physicalDevice, requiredFeatures);

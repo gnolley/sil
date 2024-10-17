@@ -19,6 +19,11 @@ namespace Sil
 		const bool Graphics = true;
 
 		/// <summary>
+		/// Whether the renderer neeeds to support on-screen rendering.
+		/// </summary>
+		const bool Presentation = true;
+
+		/// <summary>
 		/// Whether the renderer needs to support compute
 		/// </summary>
 		const bool Compute;

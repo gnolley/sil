@@ -3,7 +3,8 @@
 #include <vector>
 #include <algorithm>
 
-const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& instance, const RequiredRenderFeatures& features)
+const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& instance, const VkSurface& surface,
+	const RequiredRenderFeatures& features)
 {
 
 	std::uint32_t numDevices;
@@ -20,7 +21,7 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 	std::vector<std::pair<std::uint32_t, VkPhysicalDevice>> ratedDevices(numDevices);
 	for (auto& device : devices)
 	{
-		if (IsDeviceSupported(device, features) == false)
+		if (IsDeviceSupported(device, surface, features) == false)
 		{
 			continue;
 		}
@@ -51,7 +52,8 @@ const bool HasFlag(std::vector<VkQueueFamilyProperties>& props, VkQueueFlags bit
 }
 
 
-const bool Sil::VkDeviceSelector::IsDeviceSupported(VkPhysicalDevice& device, const RequiredRenderFeatures& features)
+const bool Sil::VkDeviceSelector::IsDeviceSupported(const VkPhysicalDevice& device, 
+	const VkSurface& surface, const RequiredRenderFeatures& features)
 {
 	std::uint32_t numQueueFamilies;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, nullptr);
@@ -59,17 +61,36 @@ const bool Sil::VkDeviceSelector::IsDeviceSupported(VkPhysicalDevice& device, co
 	std::vector<VkQueueFamilyProperties> props(numQueueFamilies);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, props.data());
 
-	if (features.Graphics && HasFlag(props, VK_QUEUE_GRAPHICS_BIT) == false)
+	VkQueueFlags flags = 0;
+	VkBool32 surfaceSupported = false;
+	for (size_t i = 0; i < props.size(); ++i)
+	{
+		if (surfaceSupported == false)
+		{
+			VkBool32 supported = false;
+			vkGetPhysicalDeviceSurfaceSupportKHR(device, static_cast<std::int32_t>(i), surface.GetSurface(), &supported);
+			surfaceSupported |= supported;
+		}
+
+		flags |= props[i].queueFlags;
+	}
+
+	if (surfaceSupported == false && features.Presentation)
 	{
 		return false;
 	}
 
-	if (features.Compute && HasFlag(props, VK_QUEUE_COMPUTE_BIT) == false)
+	if (features.Graphics && (flags && VK_QUEUE_GRAPHICS_BIT) == 0)
 	{
 		return false;
 	}
 
-	if (features.Transfer && HasFlag(props, VK_QUEUE_TRANSFER_BIT) == false)
+	if (features.Compute && (flags && VK_QUEUE_COMPUTE_BIT) == 0)
+	{
+		return false;
+	}
+
+	if (features.Transfer && (flags && VK_QUEUE_TRANSFER_BIT) == 0)
 	{
 		return false;
 	}

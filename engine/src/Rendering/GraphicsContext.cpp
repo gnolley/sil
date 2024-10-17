@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <cassert>
 
-Sil::GraphicsContext::GraphicsContext(const RenderConfig& config)
+Sil::GraphicsContext::GraphicsContext(const RenderConfig& config, const Window& window)
 	: _config(config), _instance(GetCreateInfo(CreateAppInfo(_config), _validationLayers, _extensions)),
-	_device(_instance, _config.RequiredFeatures)
+	_surface(_instance, window), _device(_instance, _surface, _config.RequiredFeatures)
 {
 }
 

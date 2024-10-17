@@ -5,7 +5,9 @@
 
 #include "Config/RenderConfig.h"
 #include "Vulkan/VkInstance.h"
+#include "Vulkan/VkSurface.h"
 #include "Rendering/GraphicsDevice.h"
+#include "Rendering/Window.h"
 
 namespace Sil
 {
@@ -13,7 +15,7 @@ namespace Sil
 	class GraphicsContext
 	{
 	public:
-		explicit GraphicsContext(const RenderConfig& config);
+		explicit GraphicsContext(const RenderConfig& config, const Window& window);
 
 		inline const RenderConfig& GetRenderConfig() const { return _config; };
 		inline const VkInstance& GetVkInstance() const { return _instance; }
@@ -28,6 +30,7 @@ namespace Sil
 
 		const RenderConfig _config;
 		const VkInstance _instance;
+		const VkSurface _surface;
 		const GraphicsDevice _device;
 
 		bool AreRequstedLayersSupported(const std::vector<const char*>& layers) const;

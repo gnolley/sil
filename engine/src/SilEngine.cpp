@@ -13,9 +13,8 @@ Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil:
 }
 
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)
-	: _graphicsContext(CreateRenderConfig(appConfig, engineConfig)), 
-		_mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName, _graphicsContext.GetVkInstance()),
-		_renderSubsystem(_graphicsContext)
+	: _glfwInstance(), _mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName),
+		_renderSubsystem(CreateRenderConfig(appConfig, engineConfig), _mainWindow)
 {
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
 }

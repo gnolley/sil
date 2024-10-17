@@ -1,11 +1,12 @@
 #pragma once
+#define GLFW_INCLUDE_VULKAN
 
-#include "Rendering/GLFWInstance.h"
-#include "Subsystems/RenderSubsystem.h"
-#include "Rendering/GraphicsContext.h"
-#include "Rendering/Window.h"
 #include "Config/EngineConfig.h"
 #include "Config/AppConfig.h"
+
+#include "Rendering/GLFWInstance.h"
+#include "Rendering/Window.h"
+#include "Subsystems/RenderSubsystem.h"
 
 #include <cstdint>
 #include <memory>
@@ -21,9 +22,9 @@ namespace Sil
 
 	private:
 		GLFWInstance _glfwInstance; // Must be before initialising graphics
-		GraphicsContext _graphicsContext;
 		Window _mainWindow;
 		RenderSubsystem _renderSubsystem;
+
 
 		void MainLoop();
 		void Cleanup();

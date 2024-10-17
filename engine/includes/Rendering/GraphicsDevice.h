@@ -5,7 +5,8 @@
 #include <utility>
 
 #include <vulkan/vulkan_core.h>
-#include <Vulkan/VkInstance.h>
+#include "Vulkan/VkInstance.h"
+#include "Vulkan/VkSurface.h"
 #include "Config/RenderConfig.h"
 
 namespace Sil {
@@ -18,7 +19,7 @@ namespace Sil {
 	class GraphicsDevice
 	{
 	public:
-		GraphicsDevice(const VkInstance& instance, const RequiredRenderFeatures& requiredFeatures);
+		GraphicsDevice(const VkInstance& instance, const VkSurface& surface, const RequiredRenderFeatures& requiredFeatures);
 		~GraphicsDevice() 
 		{
 			vkDestroyDevice(_device, nullptr);

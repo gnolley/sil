@@ -3,14 +3,14 @@
 #include <iostream>
 #include <format>
 
-Sil::RenderSubsystem::RenderSubsystem(const GraphicsContext& context)
-	: _context(context)
+Sil::RenderSubsystem::RenderSubsystem(const RenderConfig& config, const Window& window)
+	: _graphicsContext(config, window)
 {
 	LogInfo(std::format("Render Subsystem Initialised. Extensions: {0}, Layers {1}",
-		_context.NumEnabledExtensions(), _context.NumEnabledValidationLayers()));
+		_graphicsContext.NumEnabledExtensions(), _graphicsContext.NumEnabledValidationLayers()));
 
-	if (context.NumEnabledValidationLayers() > 0)
+	if (_graphicsContext.NumEnabledValidationLayers() > 0)
 	{
-		_debugAdaptor.EnableDebugger(context.GetVkInstance());
+		_debugAdaptor.EnableDebugger(_graphicsContext.GetVkInstance());
 	}
 }
