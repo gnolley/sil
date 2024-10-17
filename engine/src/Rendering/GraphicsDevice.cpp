@@ -2,15 +2,19 @@
 #include "Vulkan/VkDeviceSelector.h"
 #include "Debug/Logger.h"
 #include <cassert>
+#include <set>
 
 std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RequiredRenderFeatures& requiredFeatures);
+const std::uint32_t GetPresentationQueueIndex(const std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
+const std::uint32_t GetQueueIndex(const std::vector<VkQueueFamilyProperties>& props, Sil::QueueType queueType);
+void PopulateQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device);
 
 Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface& surface,
 	const RequiredRenderFeatures& requiredFeatures)
 	: _physicalDevice(VkDeviceSelector::SelectDevice(instance, surface, requiredFeatures)), _queueIndices(), _queueHandles()
 {
 	std::vector<VkDeviceQueueCreateInfo> queues{};
-	GetRequiredQueues(queues, _physicalDevice, requiredFeatures);
+	GetRequiredQueues(queues, _physicalDevice, surface, requiredFeatures);
 
 	VkPhysicalDeviceFeatures features{}; // TODO: create required features from feature list.
 
@@ -20,6 +24,7 @@ Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface&
 	info.pQueueCreateInfos = queues.data();
 	info.enabledExtensionCount = 0;
 	info.enabledLayerCount = 0; // TODO: specify device-only layers for backwards compatibility
+	info.pEnabledFeatures = &features;
 
 	auto result = vkCreateDevice(_physicalDevice, &info, nullptr, &_device);
 	if (result != VK_SUCCESS)
@@ -38,22 +43,45 @@ Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface&
 }
 
 void Sil::GraphicsDevice::GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,
-	const VkPhysicalDevice& device, const RequiredRenderFeatures& requiredFeatures)
+	const VkPhysicalDevice& device, const VkSurface& surface, const RequiredRenderFeatures& requiredFeatures)
 {
 	std::vector<QueueType> requiredQueues = GetRequiredQueueTypes(requiredFeatures);
 
-	std::uint32_t numQueueFamilies;
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, nullptr);
+	std::vector<VkQueueFamilyProperties> props{};
+	PopulateQueueFamilyProperties(props, device);
 
-	std::vector<VkQueueFamilyProperties> props(numQueueFamilies);
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, props.data());
+	std::set<std::uint32_t> uniqueIndices{};
 
 	for (auto& rq : requiredQueues)
 	{
-		auto& queue = GetQueue(props, rq);
-		createInfo.push_back(queue);
-		_queueIndices.push_back({rq, queue.queueFamilyIndex});
+		std::uint32_t index;
+		if (rq == QueueType::Presentation)
+		{
+			index = GetPresentationQueueIndex(props, _physicalDevice, surface.GetSurface());
+		}
+		else
+		{
+			index = GetQueueIndex(props, rq);
+		}
+
+		if (uniqueIndices.contains(index) == false)
+		{
+			auto& queue = GetQueueCreateInfo(index);
+			createInfo.push_back(queue);
+			uniqueIndices.insert(index);
+		}
+		
+		_queueIndices.push_back({rq, index});
 	}
+}
+
+void PopulateQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device)
+{
+	std::uint32_t numQueueFamilies;
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, nullptr);
+
+	props.resize(static_cast<size_t>(numQueueFamilies));
+	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, props.data());
 }
 
 const VkQueueFlags QueueTypeToFlag(Sil::QueueType queueType)
@@ -71,7 +99,19 @@ const VkQueueFlags QueueTypeToFlag(Sil::QueueType queueType)
 	throw std::runtime_error("Unknown Queue Type to VkQueueFlag mapping!");
 }
 
-const VkDeviceQueueCreateInfo Sil::GraphicsDevice::GetQueue(const std::vector<VkQueueFamilyProperties>& props, Sil::QueueType queueType) const
+const VkDeviceQueueCreateInfo Sil::GraphicsDevice::GetQueueCreateInfo(std::uint32_t queueIndex) const
+{
+	VkDeviceQueueCreateInfo info{};
+	info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	info.queueCount = 1; // TODO: Work out needed queue amount. 1 is fine for now.
+	info.queueFamilyIndex = static_cast<std::uint32_t>(queueIndex);
+	info.flags = 0; // used for protected memory
+	info.pQueuePriorities = &_queuePriority;
+
+	return info;
+}
+
+const std::uint32_t GetQueueIndex(const std::vector<VkQueueFamilyProperties>& props, Sil::QueueType queueType)
 {
 	auto flag = QueueTypeToFlag(queueType);
 
@@ -79,18 +119,27 @@ const VkDeviceQueueCreateInfo Sil::GraphicsDevice::GetQueue(const std::vector<Vk
 	{
 		if (props[i].queueFlags & flag)
 		{
-			VkDeviceQueueCreateInfo info{};
-			info.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-			info.queueCount = 1; // TODO: Work out needed queue amount. 1 is fine for now.
-			info.queueFamilyIndex = static_cast<std::uint32_t>(i);
-			info.flags = 0; // used for protected memory
-			info.pQueuePriorities = &_queuePriority;
-			
-			return info;
+			return static_cast<std::uint32_t>(i);
 		}
 	}
 
 	throw std::runtime_error("Cannot find supported queue tyoe for required queue!");
+}
+
+const std::uint32_t GetPresentationQueueIndex(const std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
+{
+	VkBool32 supported = false;
+	for (std::int32_t i = 0; i < props.size(); ++i)
+	{
+		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &supported);
+
+		if (supported)
+		{
+			return i;
+		}
+	}
+
+	throw std::runtime_error("Cannot find a presentation queue!");
 }
 
 std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RequiredRenderFeatures& requiredFeatures)
@@ -100,6 +149,11 @@ std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RequiredRenderFeatu
 	if (requiredFeatures.Graphics)
 	{
 		requiredQueues.push_back(Sil::QueueType::Graphics);
+	}
+
+	if (requiredFeatures.Presentation)
+	{
+		requiredQueues.push_back(Sil::QueueType::Presentation);
 	}
 
 	if (requiredFeatures.Transfer)

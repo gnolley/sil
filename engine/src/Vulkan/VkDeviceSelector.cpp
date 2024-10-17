@@ -18,7 +18,7 @@ const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& ins
 	std::vector<VkPhysicalDevice> devices(numDevices);
 	vkEnumeratePhysicalDevices(instance.GetInstance(), &numDevices, devices.data());
 
-	std::vector<std::pair<std::uint32_t, VkPhysicalDevice>> ratedDevices(numDevices);
+	std::vector<std::pair<std::uint32_t, VkPhysicalDevice>> ratedDevices{};
 	for (auto& device : devices)
 	{
 		if (IsDeviceSupported(device, surface, features) == false)

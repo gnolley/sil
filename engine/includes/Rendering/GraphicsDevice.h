@@ -12,6 +12,7 @@
 namespace Sil {
 	enum QueueType : std::uint8_t {
 		Graphics,
+		Presentation,
 		Transfer,
 		Compute,
 	};
@@ -43,9 +44,9 @@ namespace Sil {
 		std::vector<std::pair<QueueType, std::uint32_t>> _queueIndices;
 		std::map<QueueType, VkQueue> _queueHandles;
 
-		const VkDeviceQueueCreateInfo GetQueue(const std::vector<VkQueueFamilyProperties>& props, Sil::QueueType queueType) const;
+		const VkDeviceQueueCreateInfo GetQueueCreateInfo(std::uint32_t queueIndex) const;
 
 		void GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,
-			const VkPhysicalDevice& device, const RequiredRenderFeatures& requiredFeatures);
+			const VkPhysicalDevice& device, const VkSurface& surface, const RequiredRenderFeatures& requiredFeatures);
 	};
 }
