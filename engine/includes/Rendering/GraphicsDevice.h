@@ -20,7 +20,7 @@ namespace Sil {
 	class GraphicsDevice
 	{
 	public:
-		GraphicsDevice(const VkInstance& instance, const VkSurface& surface, const RequiredRenderFeatures& requiredFeatures);
+		GraphicsDevice(const VkInstance& instance, const VkSurface& surface, const RenderingFeatures& requiredFeatures);
 		~GraphicsDevice() 
 		{
 			vkDestroyDevice(_device, nullptr);

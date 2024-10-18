@@ -10,19 +10,21 @@ const std::uint32_t GetQueueIndex(const std::vector<VkQueueFamilyProperties>& pr
 void PopulateQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device);
 
 Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface& surface,
-	const RequiredRenderFeatures& requiredFeatures)
+	const RenderingFeatures& requiredFeatures)
 	: _physicalDevice(VkDeviceSelector::SelectDevice(instance, surface, requiredFeatures)), _queueIndices(), _queueHandles()
 {
 	std::vector<VkDeviceQueueCreateInfo> queues{};
 	GetRequiredQueues(queues, _physicalDevice, surface, requiredFeatures);
 
 	VkPhysicalDeviceFeatures features{}; // TODO: create required features from feature list.
+	const char* extensions = requiredFeatures.RequiredDeviceExtensions.data()->data();
 
 	VkDeviceCreateInfo info{};
 	info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	info.queueCreateInfoCount = static_cast<std::uint32_t>(queues.size());
 	info.pQueueCreateInfos = queues.data();
-	info.enabledExtensionCount = 0;
+	info.enabledExtensionCount = static_cast<std::uint32_t>(requiredFeatures.RequiredDeviceExtensions.size());
+	info.ppEnabledExtensionNames = &extensions;
 	info.enabledLayerCount = 0; // TODO: specify device-only layers for backwards compatibility
 	info.pEnabledFeatures = &features;
 

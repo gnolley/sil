@@ -2,9 +2,10 @@
 #include <cstdint>
 #include <vector>
 #include <algorithm>
+#include <set>
 
 const VkPhysicalDevice Sil::VkDeviceSelector::SelectDevice(const VkInstance& instance, const VkSurface& surface,
-	const RequiredRenderFeatures& features)
+	const RenderingFeatures& features)
 {
 
 	std::uint32_t numDevices;
@@ -52,8 +53,8 @@ const bool HasFlag(std::vector<VkQueueFamilyProperties>& props, VkQueueFlags bit
 }
 
 
-const bool Sil::VkDeviceSelector::IsDeviceSupported(const VkPhysicalDevice& device, 
-	const VkSurface& surface, const RequiredRenderFeatures& features)
+void GetSupportedQueues(const VkPhysicalDevice& device, const Sil::VkSurface& surface,
+	VkQueueFlags& flags, VkBool32& presentationSupported)
 {
 	std::uint32_t numQueueFamilies;
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, nullptr);
@@ -61,36 +62,81 @@ const bool Sil::VkDeviceSelector::IsDeviceSupported(const VkPhysicalDevice& devi
 	std::vector<VkQueueFamilyProperties> props(numQueueFamilies);
 	vkGetPhysicalDeviceQueueFamilyProperties(device, &numQueueFamilies, props.data());
 
-	VkQueueFlags flags = 0;
-	VkBool32 surfaceSupported = false;
 	for (size_t i = 0; i < props.size(); ++i)
 	{
-		if (surfaceSupported == false)
+		if (presentationSupported == false)
 		{
 			VkBool32 supported = false;
 			vkGetPhysicalDeviceSurfaceSupportKHR(device, static_cast<std::int32_t>(i), surface.GetSurface(), &supported);
-			surfaceSupported |= supported;
+			presentationSupported |= supported;
 		}
 
 		flags |= props[i].queueFlags;
 	}
+}
 
-	if (surfaceSupported == false && features.Presentation)
+bool AreQueuesSupported(const VkQueueFlags& flags, const VkBool32 surfaceSupported, const Sil::RenderingFeatures& requiredFeatures)
+{
+
+	if (surfaceSupported == false && requiredFeatures.Presentation)
 	{
 		return false;
 	}
 
-	if (features.Graphics && (flags && VK_QUEUE_GRAPHICS_BIT) == 0)
+	if (requiredFeatures.Graphics && (flags && VK_QUEUE_GRAPHICS_BIT) == 0)
 	{
 		return false;
 	}
 
-	if (features.Compute && (flags && VK_QUEUE_COMPUTE_BIT) == 0)
+	if (requiredFeatures.Compute && (flags && VK_QUEUE_COMPUTE_BIT) == 0)
 	{
 		return false;
 	}
 
-	if (features.Transfer && (flags && VK_QUEUE_TRANSFER_BIT) == 0)
+	if (requiredFeatures.Transfer && (flags && VK_QUEUE_TRANSFER_BIT) == 0)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool AreRequiredExtensionsSupported(const VkPhysicalDevice& device, const Sil::RenderingFeatures& requiredFeatures)
+{
+	std::uint32_t supportedExtensionCount;
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &supportedExtensionCount, nullptr);
+
+	std::vector<VkExtensionProperties> supportedExtensions(supportedExtensionCount);
+	vkEnumerateDeviceExtensionProperties(device, nullptr, &supportedExtensionCount, supportedExtensions.data());
+
+	std::uint32_t numRequiredExtensions = 0;
+	std::set<std::string_view> requiredExtensions(requiredFeatures.RequiredDeviceExtensions.begin(), 
+		requiredFeatures.RequiredDeviceExtensions.end());
+
+	for (auto& extensionProp : supportedExtensions)
+	{
+		if (requiredExtensions.contains(extensionProp.extensionName))
+		{
+			++numRequiredExtensions;
+		}
+	}
+
+	return numRequiredExtensions >= requiredExtensions.size();
+}
+
+const bool Sil::VkDeviceSelector::IsDeviceSupported(const VkPhysicalDevice& device, 
+	const VkSurface& surface, const RenderingFeatures& features)
+{
+	VkQueueFlags flags = 0;
+	VkBool32 surfaceSupported = false;
+	GetSupportedQueues(device, surface, flags, surfaceSupported);
+
+	if (AreQueuesSupported(flags, surfaceSupported, features) == false)
+	{
+		return false;
+	}
+
+	if (AreRequiredExtensionsSupported(device, features) == false)
 	{
 		return false;
 	}

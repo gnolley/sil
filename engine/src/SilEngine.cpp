@@ -1,5 +1,6 @@
 #include "SilEngine.h"
 #include "Config/RenderConfig.h"
+#include "Config/RenderingFeatures.h"
 #include "Debug/Logger.h"
 
 #include <iostream>
@@ -9,7 +10,7 @@
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
 	return Sil::RenderConfig(appConfig.ApplicationName, appConfig.AppVersion, engineConfig.EngineVersion, 
-		Sil::RequiredRenderFeatures(true, false, false));
+		Sil::RenderingFeatures(true, true, false, false));
 }
 
 Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engineConfig)

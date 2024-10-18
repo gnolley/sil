@@ -12,11 +12,11 @@ namespace Sil
 	{
 	public:
 		static const VkPhysicalDevice SelectDevice(const VkInstance& instance, const VkSurface& surface, 
-			const RequiredRenderFeatures& features);
+			const RenderingFeatures& features);
 
 	private:
 		static const std::uint32_t CalculateDeviceHeuristic(VkPhysicalDevice& device);
 		static const bool IsDeviceSupported(const VkPhysicalDevice& device, 
-			const VkSurface& surface, const RequiredRenderFeatures& features);
+			const VkSurface& surface, const RenderingFeatures& features);
 	};
 }

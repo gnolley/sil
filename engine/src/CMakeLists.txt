@@ -4,7 +4,7 @@ set(SIL_COR_SOURCES
  "Subsystems/RenderingSubsystem.cpp" "Debug/Logger.cpp"  
  "Rendering/GraphicsContext.cpp" "Debug/VulkanDebugAdaptor.cpp"
  "Rendering/GraphicsDevice.cpp" "Vulkan/VkDeviceSelector.cpp"
- "Vulkan/VkSurface.cpp")
+ "Vulkan/VkSurface.cpp" "Config/RenderingFeatures.cpp")
 
 add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES})
 
