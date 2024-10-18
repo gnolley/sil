@@ -47,6 +47,6 @@ namespace Sil {
 		const VkDeviceQueueCreateInfo GetQueueCreateInfo(std::uint32_t queueIndex) const;
 
 		void GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,
-			const VkPhysicalDevice& device, const VkSurface& surface, const RequiredRenderFeatures& requiredFeatures);
+			const VkPhysicalDevice& device, const VkSurface& surface, const RenderingFeatures& requiredFeatures);
 	};
 }

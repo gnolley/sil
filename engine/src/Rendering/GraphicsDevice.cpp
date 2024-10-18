@@ -4,7 +4,7 @@
 #include <cassert>
 #include <set>
 
-std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RequiredRenderFeatures& requiredFeatures);
+std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RenderingFeatures& requiredFeatures);
 const std::uint32_t GetPresentationQueueIndex(const std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
 const std::uint32_t GetQueueIndex(const std::vector<VkQueueFamilyProperties>& props, Sil::QueueType queueType);
 void PopulateQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& props, const VkPhysicalDevice& device);
@@ -45,7 +45,7 @@ Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface&
 }
 
 void Sil::GraphicsDevice::GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,
-	const VkPhysicalDevice& device, const VkSurface& surface, const RequiredRenderFeatures& requiredFeatures)
+	const VkPhysicalDevice& device, const VkSurface& surface, const RenderingFeatures& requiredFeatures)
 {
 	std::vector<QueueType> requiredQueues = GetRequiredQueueTypes(requiredFeatures);
 
@@ -144,7 +144,7 @@ const std::uint32_t GetPresentationQueueIndex(const std::vector<VkQueueFamilyPro
 	throw std::runtime_error("Cannot find a presentation queue!");
 }
 
-std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RequiredRenderFeatures& requiredFeatures)
+std::vector<Sil::QueueType> GetRequiredQueueTypes(const Sil::RenderingFeatures& requiredFeatures)
 {
 	std::vector<Sil::QueueType> requiredQueues{};
 
