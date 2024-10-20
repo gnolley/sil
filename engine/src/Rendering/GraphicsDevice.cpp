@@ -11,10 +11,11 @@ void PopulateQueueFamilyProperties(std::vector<VkQueueFamilyProperties>& props, 
 
 Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface& surface,
 	const RenderingFeatures& requiredFeatures)
-	: _physicalDevice(VkDeviceSelector::SelectDevice(instance, surface, requiredFeatures)), _queueIndices(), _queueHandles()
+	: _physicalDevice(VkDeviceSelector::SelectDevice(instance, surface, requiredFeatures)), _queueHandles()
 {
 	std::vector<VkDeviceQueueCreateInfo> queues{};
-	GetRequiredQueues(queues, _physicalDevice, surface, requiredFeatures);
+	std::vector<std::pair<QueueType, std::uint32_t>> queueIndices{};
+	GetRequiredQueues(queues, _physicalDevice, surface, requiredFeatures, queueIndices);
 
 	VkPhysicalDeviceFeatures features{}; // TODO: create required features from feature list.
 	const char* extensions = requiredFeatures.RequiredDeviceExtensions.data()->data();
@@ -34,18 +35,19 @@ Sil::GraphicsDevice::GraphicsDevice(const VkInstance& instance, const VkSurface&
 		throw std::runtime_error("Error creating VkDevice!");
 	}
 
-	for (auto& pair : _queueIndices)
+	for (auto& pair : queueIndices)
 	{
 		VkQueue handle;
 		vkGetDeviceQueue(_device, pair.second, 0, &handle);
-		_queueHandles.insert({ pair.first, handle });
+		_queueHandles.insert({ pair.first, {handle, pair.second} });
 	}
 
 	LogInfo("Graphics Device Initialised");
 }
 
 void Sil::GraphicsDevice::GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,
-	const VkPhysicalDevice& device, const VkSurface& surface, const RenderingFeatures& requiredFeatures)
+	const VkPhysicalDevice& device, const VkSurface& surface, const RenderingFeatures& requiredFeatures,
+	std::vector<std::pair<QueueType, std::uint32_t>>& queueIndices)
 {
 	std::vector<QueueType> requiredQueues = GetRequiredQueueTypes(requiredFeatures);
 
@@ -73,7 +75,7 @@ void Sil::GraphicsDevice::GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>
 			uniqueIndices.insert(index);
 		}
 		
-		_queueIndices.push_back({rq, index});
+		queueIndices.push_back({rq, index});
 	}
 }
 

@@ -7,6 +7,7 @@
 #include "Vulkan/VkInstance.h"
 #include "Vulkan/VkSurface.h"
 #include "Rendering/GraphicsDevice.h"
+#include "Rendering/Swapchain.h"
 #include "Rendering/Window.h"
 
 namespace Sil
@@ -32,6 +33,7 @@ namespace Sil
 		const VkInstance _instance;
 		const VkSurface _surface;
 		const GraphicsDevice _device;
+		const Swapchain _swapchain;
 
 		bool AreRequstedLayersSupported(const std::vector<const char*>& layers) const;
 		void PopulateValidationLayersList(std::vector<const char*>& layers) const;

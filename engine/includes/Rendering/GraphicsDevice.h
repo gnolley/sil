@@ -7,7 +7,9 @@
 #include <vulkan/vulkan_core.h>
 #include "Vulkan/VkInstance.h"
 #include "Vulkan/VkSurface.h"
+#include "Rendering/RenderQueue.h"
 #include "Config/RenderConfig.h"
+#include "Debug/Logger.h"
 
 namespace Sil {
 	enum QueueType : std::uint8_t {
@@ -36,17 +38,28 @@ namespace Sil {
 			return _physicalDevice;
 		}
 
+		const RenderQueue* GetQueue(QueueType type) const 
+		{
+			if (_queueHandles.contains(type) == false)
+			{
+				LogError("Cannot get Queue Type {0}! No such handle exists");
+				return nullptr;
+			}
+
+			return &_queueHandles.at(type);
+		}
+
 	private:
 		VkPhysicalDevice _physicalDevice;
 		VkDevice _device;
 
 		const float _queuePriority = 1.f;
-		std::vector<std::pair<QueueType, std::uint32_t>> _queueIndices;
-		std::map<QueueType, VkQueue> _queueHandles;
+		std::map<QueueType, RenderQueue> _queueHandles;
 
 		const VkDeviceQueueCreateInfo GetQueueCreateInfo(std::uint32_t queueIndex) const;
 
-		void GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,
-			const VkPhysicalDevice& device, const VkSurface& surface, const RenderingFeatures& requiredFeatures);
+		void GetRequiredQueues(std::vector<VkDeviceQueueCreateInfo>& createInfo,const VkPhysicalDevice& device, 
+			const VkSurface& surface, const RenderingFeatures& requiredFeatures, 
+			std::vector<std::pair<QueueType, std::uint32_t>>& queueIndices);
 	};
 }

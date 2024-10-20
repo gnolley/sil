@@ -6,7 +6,8 @@
 
 Sil::GraphicsContext::GraphicsContext(const RenderConfig& config, const Window& window)
 	: _config(config), _instance(GetCreateInfo(CreateAppInfo(_config), _validationLayers, _extensions)),
-	_surface(_instance, window), _device(_instance, _surface, _config.RequiredFeatures)
+	_surface(_instance, window), _device(_instance, _surface, _config.RequiredFeatures),
+	_swapchain(_device, window, _surface, config.RequiredFeatures)
 {
 }
 
@@ -94,6 +95,7 @@ void Sil::GraphicsContext::PopulateExtensionsList(std::vector<const char*>& exte
 
 void Sil::GraphicsContext::PopulateValidationLayersList(std::vector<const char*>& layers) const
 {
+	layers.clear();
 #if SIL_ENABLE_GFX_VALIDATION_LAYERS
 	layers.push_back("VK_LAYER_KHRONOS_validation");
 #endif // SIL_ENABLE_GFX_VALIDATION_LAYERS
