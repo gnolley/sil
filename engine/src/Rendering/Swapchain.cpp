@@ -72,17 +72,58 @@ Sil::Swapchain::Swapchain(const GraphicsDevice& device, const Window& window,
 		throw std::runtime_error("Error creating swapchain!");
 	}
 
-	std::uint32_t numSwapchainImages;
-	vkGetSwapchainImagesKHR(device.GetDevice(), _swapchain, &numSwapchainImages, nullptr);
-	_images.resize(numSwapchainImages);
-	vkGetSwapchainImagesKHR(device.GetDevice(), _swapchain, &numSwapchainImages, _images.data());
+	GetSwapchainImages();
 
 	LogInfo("Swapchain Initialised");
 }
 
 Sil::Swapchain::~Swapchain()
 {
+	for (auto& view : _imageViews)
+	{
+		vkDestroyImageView(_device.GetDevice(), view, nullptr);
+	}
+
 	vkDestroySwapchainKHR(_device.GetDevice(), _swapchain, nullptr);
+}
+
+const VkImageView CreateImageView(const VkImage& image, const Sil::GraphicsDevice& device, const VkFormat format)
+{
+	VkImageViewCreateInfo info{};
+	info.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+	info.image = image;
+	info.viewType = VK_IMAGE_VIEW_TYPE_2D;
+	info.format = format;
+	info.components.r = info.components.g = info.components.b = info.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+	info.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	info.subresourceRange.baseArrayLayer = 0;
+	info.subresourceRange.baseMipLevel = 0;
+	info.subresourceRange.layerCount = 1;
+	info.subresourceRange.levelCount = 1;
+
+	VkImageView imageView;
+	auto result = vkCreateImageView(device.GetDevice(), &info, nullptr, &imageView);
+	if (result != VK_SUCCESS)
+	{
+		throw std::runtime_error("Could not create image view ");
+	}
+
+	return imageView;
+}
+
+void Sil::Swapchain::GetSwapchainImages()
+{
+	std::uint32_t numSwapchainImages;
+	vkGetSwapchainImagesKHR(_device.GetDevice(), _swapchain, &numSwapchainImages, nullptr);
+
+	_images.resize(numSwapchainImages);
+	vkGetSwapchainImagesKHR(_device.GetDevice(), _swapchain, &numSwapchainImages, _images.data());
+
+	_imageViews.resize(numSwapchainImages);
+	for (size_t i = 0; i < numSwapchainImages; ++i)
+	{
+		_imageViews[i] = CreateImageView(_images[i], _device, _surfaceFormat.format);
+	}
 }
 
 const std::uint32_t GetSwapchainImageCount(const VkSurfaceCapabilitiesKHR& capabilities, const Sil::RenderingFeatures& requiredFeatures)

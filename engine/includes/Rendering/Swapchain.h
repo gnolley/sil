@@ -23,11 +23,15 @@ namespace Sil
 
 	private:
 		VkSwapchainKHR _swapchain;
-		std::vector<VkImage> _images;
-
 		const GraphicsDevice& _device;
+
+		std::vector<VkImage> _images;
+		std::vector<VkImageView> _imageViews;
+
 		VkSurfaceCapabilitiesKHR _surfaceCapabilities;
 		VkSurfaceFormatKHR _surfaceFormat;
 		VkPresentModeKHR _presentMode;
+
+		void GetSwapchainImages();
 	};
 }
