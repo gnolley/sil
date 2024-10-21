@@ -5,6 +5,8 @@
 #include "Vulkan/VkSurface.h"
 #include "Config/RenderingFeatures.h"
 
+#include <vector>
+
 namespace Sil
 {
 	class Swapchain
@@ -21,6 +23,8 @@ namespace Sil
 
 	private:
 		VkSwapchainKHR _swapchain;
+		std::vector<VkImage> _images;
+
 		const GraphicsDevice& _device;
 		VkSurfaceCapabilitiesKHR _surfaceCapabilities;
 		VkSurfaceFormatKHR _surfaceFormat;

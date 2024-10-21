@@ -72,6 +72,11 @@ Sil::Swapchain::Swapchain(const GraphicsDevice& device, const Window& window,
 		throw std::runtime_error("Error creating swapchain!");
 	}
 
+	std::uint32_t numSwapchainImages;
+	vkGetSwapchainImagesKHR(device.GetDevice(), _swapchain, &numSwapchainImages, nullptr);
+	_images.resize(numSwapchainImages);
+	vkGetSwapchainImagesKHR(device.GetDevice(), _swapchain, &numSwapchainImages, _images.data());
+
 	LogInfo("Swapchain Initialised");
 }
 
