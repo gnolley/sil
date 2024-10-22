@@ -1,38 +1,41 @@
 #include "Debug/VulkanDebugAdaptor.h"
 #include "Debug/Logger.h"
+#include <stdexcept>
 
-const VkDebugUtilsMessageSeverityFlagBitsEXT MIN_MESSAGE_SEVERITY = VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+const VkDebugUtilsMessageSeverityFlagBitsEXT MIN_MESSAGE_SEVERITY = VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
 
 Sil::VulkanDebugAdaptor::~VulkanDebugAdaptor() 
 {
-	if (_instance != nullptr)
+	if (_instance.has_value())
 	{
 		DisableDebugger();
 	}
 }
 
-void Sil::VulkanDebugAdaptor::EnableDebugger(const VkInstance& instance)
+void Sil::VulkanDebugAdaptor::EnableDebugger(const ::VkInstance* instance)
 {
 	VkDebugUtilsMessengerCreateInfoEXT createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
 	createInfo.messageSeverity = 
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT		|
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT		|
-		VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT		|
+		VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT						|
+		VK_DEBUG_UTILS_MESSAGE_SEVERITY_INFO_BIT_EXT						|
+		VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT						|
 		VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
-	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT |
+
+	createInfo.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT	|
+		VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT						|
 		VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+
 	createInfo.pfnUserCallback = CallbackMethod;
 
-	auto pfn = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(instance.GetInstance(), "vkCreateDebugUtilsMessengerEXT");
+	auto pfn = (PFN_vkCreateDebugUtilsMessengerEXT)vkGetInstanceProcAddr(*instance, "vkCreateDebugUtilsMessengerEXT");
 	
 	if (pfn == nullptr)
 	{
 		throw std::runtime_error("Debug utils extension not found.");
 	}
 	
-	auto result = pfn(instance.GetInstance(), &createInfo, nullptr, &_messenger);
+	auto result = pfn(*instance, &createInfo, nullptr, &_messenger);
 
 	if (result != VK_SUCCESS)
 	{
@@ -40,22 +43,24 @@ void Sil::VulkanDebugAdaptor::EnableDebugger(const VkInstance& instance)
 	}
 
 	LogInfo("Vulkan message debugger enabled");
-	_instance = &instance;
+	_instance = std::optional<const ::VkInstance*>{ instance };
 }							 
 
 void Sil::VulkanDebugAdaptor::DisableDebugger()
 {
-	if (_instance == nullptr)
+	if (_instance.has_value() == false)
 	{
 		return;
 	}
 
-	auto pfn = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(_instance->GetInstance(), "vkDestroyDebugUtilsMessengerEXT");
+	auto pfn = (PFN_vkDestroyDebugUtilsMessengerEXT)vkGetInstanceProcAddr(*_instance.value(), "vkDestroyDebugUtilsMessengerEXT");
 	
 	if (pfn != nullptr)
 	{
-		pfn(_instance->GetInstance(), _messenger, nullptr);
+		pfn(*_instance.value(), _messenger, nullptr);
 	}
+
+	_instance.reset();
 }
 #pragma warning(push)
 #pragma warning(disable: 4100) // disable unused param warning, function definition comes from vulkan

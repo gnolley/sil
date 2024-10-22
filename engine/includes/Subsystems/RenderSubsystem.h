@@ -14,6 +14,5 @@ namespace Sil
 
 	private:
 		GraphicsContext _graphicsContext;
-		VulkanDebugAdaptor _debugAdaptor {};
 	};
 }

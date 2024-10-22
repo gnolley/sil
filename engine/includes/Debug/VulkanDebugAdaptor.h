@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vulkan/vulkan_core.h"
-#include "Vulkan/VkInstance.h"
+#include <optional>
 
 namespace Sil
 {
@@ -11,11 +11,11 @@ namespace Sil
 		VulkanDebugAdaptor() = default;
 		~VulkanDebugAdaptor();
 
-		void EnableDebugger(const VkInstance& instance);
+		void EnableDebugger(const ::VkInstance* instance);
 		void DisableDebugger();		
 
 	private:
-		const VkInstance* _instance;
+		std::optional<const ::VkInstance*> _instance;
 		VkDebugUtilsMessengerEXT _messenger;
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL CallbackMethod(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
