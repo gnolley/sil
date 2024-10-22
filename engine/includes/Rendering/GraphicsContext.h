@@ -5,6 +5,7 @@
 
 #include "Config/RenderConfig.h"
 #include "Vulkan/VkInstance.h"
+#include "Debug/VulkanDebugAdaptor.h"
 #include "Vulkan/VkSurface.h"
 #include "Rendering/GraphicsDevice.h"
 #include "Rendering/Swapchain.h"
@@ -31,6 +32,7 @@ namespace Sil
 
 		const RenderConfig _config;
 		const VkInstance _instance;
+		const VulkanDebugAdaptor _debugAdaptor;
 		const VkSurface _surface;
 		const GraphicsDevice _device;
 		const Swapchain _swapchain;
