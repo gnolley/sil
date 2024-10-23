@@ -12,6 +12,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 
 set(ENGINE_SRC_TARGET Sil-Core)
 set(BOOTSTRAP_TARGET Sil-Bootstrapper)
+set(COOK_TOOL_TARGET Stagehand)
 
 set(SIL_DEBUG_FLAG SIL_DEBUG)
 set(SIL_RELEASE_FLAG SIL_RELEASE)
@@ -71,6 +72,7 @@ endif()
 add_subdirectory(config)
 add_subdirectory(engine)
 add_subdirectory(bootstrap)
+add_subdirectory(tools)
 
 if(BUILD_UNIT_TESTS)
     include(CTest)

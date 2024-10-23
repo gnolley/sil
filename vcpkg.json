@@ -6,6 +6,9 @@
 
     },
     "vcpkg-cmake",
-    "vcpkg-cmake-config"
+    "vcpkg-cmake-config",
+    "glslang",
+    "spirv-tools",
+    "shaderc"
   ]
 }
