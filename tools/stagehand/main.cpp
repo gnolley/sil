@@ -32,10 +32,38 @@ namespace Stagehand
 		processData.outputStream.close();
 	}
 
-	//void ProcessDirectory(const filesystem::path& directory, const filesystem::path& outputDirectory, bool recursive)
-	//{
-	//
-	//}
+	void ProcessFile(const filesystem::path& source, const filesystem::path& output, const BuilderMap& builderMap, const ProcessMap& processMap)
+	{
+		auto inputExtension = source.extension();
+		auto streamBuilder = SelectStreamBuilder(inputExtension, builderMap);
+
+		auto processData = ProcessorData{};
+		processData.inputPath = source;
+		processData.outputStream = streamBuilder(source, output);
+
+		Processor processor = SelectProcessor(inputExtension, processMap);
+		processor(processData);
+
+		processData.outputStream.close();
+	}
+
+	void ProcessDirectory(const filesystem::path& directory, const filesystem::path& outputDirectory, bool recursive)
+	{
+		auto builderMap = ConstructBuilderMap();
+		auto processorMap = ConstructProcessMap();
+		
+		if (recursive)
+		{
+
+			for (const auto& entry : filesystem::recursive_directory_iterator(directory))
+			{
+				if (entry.is_regular_file())
+				{
+					ProcessFile(entry.path(), outputDirectory, builderMap, processorMap);
+				}
+			}
+		}
+	}
 
 
 }
@@ -82,10 +110,10 @@ int main(int argc, char** argv)
 	{
 		Stagehand::ProcessFile(input, output);
 	}
-	//else if (filesystem::is_directory(input))
-	//{
-	//	ProcessDirectory(input, true);
-	//}
+	else if (filesystem::is_directory(input))
+	{
+		Stagehand::ProcessDirectory(input, output, true);
+	}
 	else
 	{
 		std::cout << "Inavlid input type! Must be file or directory!";
