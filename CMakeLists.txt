@@ -13,6 +13,7 @@ set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/")
 set(ENGINE_SRC_TARGET Sil-Core)
 set(BOOTSTRAP_TARGET Sil-Bootstrapper)
 set(COOK_TOOL_TARGET Stagehand)
+set(COOK_TOOL_DIR ${CMAKE_SOURCE_DIR}/tools/stagehand/)
 
 set(SIL_DEBUG_FLAG SIL_DEBUG)
 set(SIL_RELEASE_FLAG SIL_RELEASE)
@@ -43,8 +44,6 @@ option(ENABLE_SANITIZE_UNDEF "Enable Undefined Sanitiser" OFF)
 option(ENABLE_VK_VALIDATION_LAYERS "Enable Vulkan Validation Layers" OFF)
 
 endif()
-
-
 
 include(FindVulkan)
 if(${Vulkan_FOUND})

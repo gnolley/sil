@@ -1,58 +1,97 @@
 #include <iostream>
 #include <stdlib.h>
 
-#include <shaderc/shaderc.hpp>
-#include <fstream>
-#include <sstream>
 #include <string>
+#include <string_view>
 
-void GetShader(const std::string& filePath, std::string& shader)
+#include <filesystem>
+#include <CLI/CLI.hpp>
+
+#include <functional>
+
+#include "AssetProcessors.hpp"  
+#include "StreamBuilders.hpp"
+
+namespace filesystem = std::filesystem;
+
+namespace Stagehand
 {
-	std::ifstream fileStream(filePath);
-	std::stringstream stringStream;
 
-	stringStream << fileStream.rdbuf();
-
-	fileStream.close();
-
-	shader = stringStream.str();
-}
-
-void CompileShader(std::string& output, const shaderc::Compiler& compiler, const shaderc_shader_kind kind, const std::string& shader, const std::string& name)
-{
-	const shaderc::CompileOptions options{};
-
-	auto preprocessResult = compiler.PreprocessGlsl(shader, kind, name.c_str(), options);
-	std::string preprocessed(preprocessResult.begin(), preprocessResult.end());
-
-	auto compileResult = compiler.CompileGlslToSpv(preprocessed, shaderc_shader_kind::shaderc_glsl_default_vertex_shader, name.c_str(), options);
-	if (compileResult.GetCompilationStatus() != shaderc_compilation_status::shaderc_compilation_status_success)
+	void ProcessFile(const filesystem::path& source, const filesystem::path& output)
 	{
-		std::cout << "Error compiling shader " << name << ": " << compileResult.GetErrorMessage() << "\n";
+		auto inputExtension = source.extension();
+		auto streamBuilder = SelectStreamBuilder(inputExtension);
+
+		auto processData = ProcessorData{};
+		processData.inputPath = source;
+		processData.outputStream = streamBuilder(source, output);
+
+		Processor processor = SelectProcessor(inputExtension);
+		processor(processData);
+
+		processData.outputStream.close();
 	}
-	output = { compileResult.begin(), compileResult.end() };
+
+	//void ProcessDirectory(const filesystem::path& directory, const filesystem::path& outputDirectory, bool recursive)
+	//{
+	//
+	//}
+
+
 }
 
-void WriteShader(std::string& compiledShader, std::string outputPath)
+int main(int argc, char** argv)
 {
-	std::ofstream output(outputPath, std::ios::binary);
-	output << compiledShader;
-	output.close();
-}
+	CLI::App app{ "Cook tooling for Soliloquy Engine." };
+	argv = app.ensure_utf8(argv);
 
-int main()
-{
-	std::string vert, frag;
-	GetShader("test.vert", vert);
-	GetShader("test.frag", frag);
+	std::string inputPath = "";
+	app.add_option("-i,--input", inputPath, "The file or directory of the asset to be cooked.")->required();
 
-	shaderc::Compiler compiler{};
-	std::string vertCompiled, fragCompiled;
-	CompileShader(vertCompiled, compiler, shaderc_shader_kind::shaderc_glsl_vertex_shader, vert, "test");
-	CompileShader(fragCompiled, compiler, shaderc_shader_kind::shaderc_fragment_shader, frag, "test");
+	std::string outputPath = "";
+	app.add_option("-o,--output", outputPath, "The output directory for the cooked asset")->required();
 
-	WriteShader(vertCompiled, "vert.spv");
-	WriteShader(fragCompiled, "frag.spv");
+	CLI11_PARSE(app, argc, argv);
+
+	filesystem::path output(outputPath);
+
+	if (filesystem::exists(outputPath) == false)
+	{
+		if (output.has_extension() == true)
+		{
+			std::cout << "Output must be a directory, not a file!" << outputPath << "\n";
+			return EXIT_FAILURE;
+		}
+
+		filesystem::create_directory(output);
+	}
+	else if (filesystem::is_directory(outputPath) == false)
+	{
+		std::cout << "Output must be a directory, not a file!";
+		return EXIT_FAILURE;
+	}
+
+	filesystem::path input(inputPath);
+	if (filesystem::exists(inputPath) == false)
+	{
+		std::cout << "Cannot find input path " << inputPath << "\n";
+		return EXIT_FAILURE;
+	}
+
+	if (filesystem::is_regular_file(input))
+	{
+		Stagehand::ProcessFile(input, output);
+	}
+	//else if (filesystem::is_directory(input))
+	//{
+	//	ProcessDirectory(input, true);
+	//}
+	else
+	{
+		std::cout << "Inavlid input type! Must be file or directory!";
+		return EXIT_FAILURE;
+	}
+
+
 	return EXIT_SUCCESS;
-
 }
