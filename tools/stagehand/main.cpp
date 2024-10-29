@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 	{
 		if (output.has_extension() == true)
 		{
-			std::cout << "Output must be a directory, not a file!" << outputPath << "\n";
+			std::cerr << "Output must be a directory, not a file!" << outputPath << "\n";
 			return EXIT_FAILURE;
 		}
 
@@ -95,28 +95,37 @@ int main(int argc, char** argv)
 	}
 	else if (filesystem::is_directory(outputPath) == false)
 	{
-		std::cout << "Output must be a directory, not a file!";
+		std::cerr << "Output must be a directory, not a file!";
 		return EXIT_FAILURE;
 	}
 
 	filesystem::path input(inputPath);
 	if (filesystem::exists(inputPath) == false)
 	{
-		std::cout << "Cannot find input path " << inputPath << "\n";
+		std::cerr << "Cannot find input path " << inputPath << "\n";
 		return EXIT_FAILURE;
 	}
 
-	if (filesystem::is_regular_file(input))
-	{
-		Stagehand::ProcessFile(input, output);
+	std::cout << "Cooking assets from " << input << " to " << output << ".\n";
+
+	try {
+
+		if (filesystem::is_regular_file(input))
+		{
+			Stagehand::ProcessFile(input, output);
+		}
+		else if (filesystem::is_directory(input))
+		{
+			Stagehand::ProcessDirectory(input, output, true);
+		}
+		else
+		{
+			std::cerr << "Inavlid input type! Must be file or directory!";
+			return EXIT_FAILURE;
+		}
 	}
-	else if (filesystem::is_directory(input))
-	{
-		Stagehand::ProcessDirectory(input, output, true);
-	}
-	else
-	{
-		std::cout << "Inavlid input type! Must be file or directory!";
+	catch (std::exception e) {
+		std::cerr << "Cook failed! " << e.what();
 		return EXIT_FAILURE;
 	}
 

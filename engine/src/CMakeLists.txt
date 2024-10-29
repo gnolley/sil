@@ -7,6 +7,7 @@ set(SIL_COR_SOURCES
  "Vulkan/VkSurface.cpp" "Config/RenderingFeatures.cpp" "Rendering/Swapchain.cpp")
 
 add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES})
+add_dependencies(${ENGINE_SRC_TARGET} ${BUILD_BUILTIN_ASSETS_TARGET})
 
 target_link_libraries(${ENGINE_SRC_TARGET} PUBLIC glfw Vulkan::Vulkan)
 
