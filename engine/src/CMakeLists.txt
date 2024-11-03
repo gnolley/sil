@@ -1,3 +1,8 @@
+set(SIL_COR_INCLUDES 
+	"${ENGINE_DIR}/includes/"
+	${Vulkan_INCLUDE_DIRS}
+)
+
 set(SIL_COR_SOURCES
  "SilEngine.cpp"
  "Rendering/Window.cpp" "Rendering/Renderer.cpp" 
@@ -6,24 +11,13 @@ set(SIL_COR_SOURCES
  "Rendering/GraphicsDevice.cpp" "Vulkan/VkDeviceSelector.cpp"
  "Vulkan/VkSurface.cpp" "Config/RenderingFeatures.cpp" "Rendering/Swapchain.cpp")
 
-add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES})
-add_dependencies(${ENGINE_SRC_TARGET} ${BUILD_BUILTIN_ASSETS_TARGET})
+add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES
+target_include_directories(${ENGINE_SRC_TARGET} PUBLIC ${SIL_COR_INCLUDES})
 
 target_link_libraries(${ENGINE_SRC_TARGET} PUBLIC glfw Vulkan::Vulkan)
+add_dependencies(${ENGINE_SRC_TARGET} ${BUILD_BUILTIN_ASSETS_TARGET})
 
-if(${ENABLE_WARNINGS})
-	target_set_warnings(${ENGINE_SRC_TARGET} ${ENABLE_WARNINGS_AS_ERRORS})
-endif()
-
-if(${ENABLE_LTO})
-    target_enable_lto(${ENGINE_SRC_TARGET})
-endif()
-
-if(${CMAKE_BUILD_TYPE} STREQUAL "DEBUG")
-    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_DEBUG_FLAG})
-elseif(${CMAKE_BUILD_TYPE} STREQUAL "RELEASE")
-    target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_RELEASE_FLAG})
-endif()
+setup_target(${ENGINE_SRC_TARGET})
 
 if(${ENABLE_VK_VALIDATION_LAYERS})
     target_compile_definitions(${ENGINE_SRC_TARGET} PRIVATE ${SIL_VK_LAYERS_FLAG})

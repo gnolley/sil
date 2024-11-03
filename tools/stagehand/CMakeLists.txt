@@ -5,6 +5,7 @@ set(SIL_STAGEHAND_SOURCES "main.cpp"
 
 add_executable(${COOK_TOOL_TARGET} ${SIL_STAGEHAND_SOURCES})
 target_include_directories(${COOK_TOOL_TARGET} PUBLIC "${COOK_TOOL_DIR}/includes/")
+setup_target(${COOK_TOOL_TARGET})
 
 add_custom_target(${BUILD_BUILTIN_ASSETS_TARGET}
 	COMMAND ${COOK_TOOL_TARGET} -i "${CMAKE_SOURCE_DIR}/builtin_resources" -o "${CMAKE_BINARY_DIR}/builtin_resources"
