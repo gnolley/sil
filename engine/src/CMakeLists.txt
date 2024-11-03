@@ -11,7 +11,7 @@ set(SIL_COR_SOURCES
  "Rendering/GraphicsDevice.cpp" "Vulkan/VkDeviceSelector.cpp"
  "Vulkan/VkSurface.cpp" "Config/RenderingFeatures.cpp" "Rendering/Swapchain.cpp")
 
-add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES
+add_library(${ENGINE_SRC_TARGET} STATIC ${SIL_COR_SOURCES})
 target_include_directories(${ENGINE_SRC_TARGET} PUBLIC ${SIL_COR_INCLUDES})
 
 target_link_libraries(${ENGINE_SRC_TARGET} PUBLIC glfw Vulkan::Vulkan)
