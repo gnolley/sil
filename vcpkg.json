@@ -13,6 +13,7 @@
     "vcpkg-cmake-config",
     "glslang",
     "spirv-tools",
-    "shaderc"
+    "shaderc",
+    "xxhash"
   ]
 }
