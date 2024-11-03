@@ -1,6 +1,6 @@
-set(PLAYBOOK_LIB_SRC "Playbook.cpp")
+set(PLAYBOOK_LIB_SRC "Playbook.cpp" "SilId.cpp" "Asset.cpp")
 
-add_library(${PLAYBOOK_LIB_TARGET} STATIC PLAYBOOK_LIB_SRC)
+add_library(${PLAYBOOK_LIB_TARGET} STATIC ${PLAYBOOK_LIB_SRC})
 target_include_directories(${PLAYBOOK_LIB_TARGET} PUBLIC "${PLAYBOOK_LIB_DIR}/includes/")
 
 find_package(xxHash CONFIG REQUIRED)

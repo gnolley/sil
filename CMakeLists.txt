@@ -15,10 +15,6 @@ set(SIL_DEBUG_FLAG SIL_DEBUG)
 set(SIL_RELEASE_FLAG SIL_RELEASE)
 set(SIL_VK_LAYERS_FLAG SIL_ENABLE_GFX_VALIDATION_LAYERS)
 
-include(Targets)
-include(ConfigSafeGuard)
-include(Utils)
-
 option(BUILD_UNIT_TESTS "Build unit tests with build" OFF)
 option(ENABLE_WARNINGS "Build unit tests with build" ON)
 option(ENABLE_WARNINGS_AS_ERRORS "Build unit tests with build" ON)
@@ -42,6 +38,10 @@ option(ENABLE_SANITIZE_UNDEF "Enable Undefined Sanitiser" OFF)
 option(ENABLE_VK_VALIDATION_LAYERS "Enable Vulkan Validation Layers" OFF)
 
 endif()
+
+include(Targets)
+include(ConfigSafeGuard)
+include(Utils)
 
 include(FindVulkan)
 if(NOT ${Vulkan_FOUND})

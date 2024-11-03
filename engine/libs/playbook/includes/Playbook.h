@@ -1,12 +1,19 @@
 #pragma once
+#include "Asset.h"
+#include "SilId.h"
+#include <map>
 
-class Playbook
+namespace Sil 
 {
-public:
+	class Playbook
+	{
+	public:
 
-	void LoadBuiltinResources();
+		void LoadBuiltinResources();
+		Asset& GetAssetById(SilId& id);
 
-private:
-	
+	private:
+		std::map<char, Asset> _assets;
 
-};
+	};
+}
