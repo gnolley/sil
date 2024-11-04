@@ -8,5 +8,6 @@ set(COOK_TOOL_DIR ${CMAKE_SOURCE_DIR}/tools/stagehand)
 
 set(PLAYBOOK_LIB_TARGET Sil-Playbook)
 set(PLAYBOOK_LIB_DIR ${CMAKE_SOURCE_DIR}/engine/libs/playbook)
+set(PLAYBOOK_INCLUDE_DIR ${PLAYBOOK_LIB_DIR}/includes)
 
 set(BUILD_BUILTIN_ASSETS_TARGET StagehandBuildBuiltin)

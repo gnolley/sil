@@ -1,6 +1,6 @@
 #pragma once
-
-#include <string_view>
+#include <string>
+#include <cstdlib>
 
 namespace Sil
 {
@@ -10,7 +10,7 @@ namespace Sil
 		SilId() = default;
 		//SilId(std::string_view id);
 
-		const std::string_view ToString() const;
+		const std::string ToString() const;
 
 		//static SilId NewId();
 
@@ -18,6 +18,6 @@ namespace Sil
 		static SilId FromName(std::string_view nameToHash);
 
 	private:
-		char _id[16]; // 128-bit hash
+		std::byte _id[16]; // 128-bit hash
 	};
 }
