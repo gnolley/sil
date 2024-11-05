@@ -2,6 +2,7 @@
 #include "Asset.h"
 #include "SilId.h"
 #include <map>
+#include <filesystem>
 
 namespace Sil 
 {
@@ -9,7 +10,7 @@ namespace Sil
 	{
 	public:
 
-		void LoadBuiltinResources();
+		void LoadBuiltinResources(const std::filesystem::path& path);
 		Asset& GetAssetById(SilId& id);
 
 	private:

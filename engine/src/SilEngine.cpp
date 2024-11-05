@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cassert>
 #include <format>
+#include "SilId.h"
 
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
@@ -21,6 +22,7 @@ Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engine
 		_renderSubsystem(CreateRenderConfig(appConfig, engineConfig), _mainWindow)
 {
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
+	_playbook.LoadBuiltinResources(std::filesystem::relative(engineConfig.BuiltinAssetsRelativePath, std::filesystem::current_path()));
 }
 
 // == Runtime

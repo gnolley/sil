@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <format>
+#include <filesystem>
 
 int main()
 {
@@ -19,7 +20,7 @@ int main()
 
 	const Sil::EngineConfig engineConfig(
 		Sil::Version(project_version_major, project_version_minor, project_version_patch),
-		800, 600
+		800, 600, std::filesystem::path("../builtin_resources")
 	);
 
 	try {

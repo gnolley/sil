@@ -7,6 +7,7 @@
 #include "Rendering/GLFWInstance.h"
 #include "Rendering/Window.h"
 #include "Subsystems/RenderSubsystem.h"
+#include "Playbook.h"
 
 #include <cstdint>
 #include <memory>
@@ -24,6 +25,7 @@ namespace Sil
 		GLFWInstance _glfwInstance; // Must be before initialising graphics
 		Window _mainWindow;
 		RenderSubsystem _renderSubsystem;
+		Playbook _playbook;
 
 
 		void MainLoop();
