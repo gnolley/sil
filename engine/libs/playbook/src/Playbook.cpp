@@ -8,6 +8,6 @@ namespace Sil
 
 	Asset& Playbook::GetAssetById(SilId& id)
 	{
-		return _assets[id.ToString()[0]];
+		return _assets[id];
 	}
 }

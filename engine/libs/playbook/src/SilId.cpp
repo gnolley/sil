@@ -9,7 +9,20 @@
 
 const XXH64_hash_t SEED = 1234;
 
-//Note: It is assumed the data is 128-bits.
+//Note: It is assumed the data is 128-bits
+
+bool Sil::SilId::operator== (const SilId& other) const
+{
+	for (int i = 0; i < 16; ++i)
+	{
+		if (_id[i] != other._id[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
 
 const std::string Sil::SilId::ToString() const
 {
@@ -41,9 +54,10 @@ Sil::SilId Sil::SilId::FromName(std::string_view nameToHash)
 	SilId val{};
 
 	auto hash = XXH128(nameToHash.data(), nameToHash.length(), SEED);
-	std::uint64_t* lower = &hash.low64;
+	val._narrowId = hash.low64 ^ hash.high64;
 
 	// it is assumed that SilId holds a 128-bit char array.
+	std::uint64_t* lower = &hash.low64;
 	std::byte* iter = reinterpret_cast<std::byte*>(lower);
 	for (int i = 0; i < 8; ++i)
 	{

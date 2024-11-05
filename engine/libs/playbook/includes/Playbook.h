@@ -13,7 +13,7 @@ namespace Sil
 		Asset& GetAssetById(SilId& id);
 
 	private:
-		std::map<char, Asset> _assets;
+		std::unordered_map<SilId, Asset> _assets;
 
 	};
 }

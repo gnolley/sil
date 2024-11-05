@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <array>
 #include <cstdlib>
+#include <functional>
 
 namespace Sil
 {
@@ -14,10 +16,34 @@ namespace Sil
 
 		//static SilId NewId();
 
-		//// Hashes a name to a 128-bit id
+		// Hashes a name to a 128-bit id
 		static SilId FromName(std::string_view nameToHash);
 
+		inline std::array<std::byte, 16>::iterator Begin() 
+		{ 
+			return _id.begin(); 
+		}
+
+		inline std::array<std::byte, 16>::iterator End()
+		{
+			return _id.end();
+		}
+
+		bool operator== (const SilId& other) const;
+		
+		friend std::hash<Sil::SilId>;
+
 	private:
-		std::byte _id[16]; // 128-bit hash
+		std::array<std::byte, 16> _id; // 128-bit hash
+		size_t _narrowId;
 	};
 }
+
+template<>
+struct std::hash<Sil::SilId>
+{
+	std::size_t operator()(const Sil::SilId& id) const noexcept
+	{
+		return id._narrowId;
+	}
+};
