@@ -1,18 +1,19 @@
 #pragma once
 
-#include "ProcessorData.h"
 #include "Types.h"
+#include "Templates.hpp"
+#include "ProcessorData.h"
 #include "Processors/ShaderProcessor.hpp"
 
 #include <fstream>
 #include <functional>
 #include <string_view>
 #include <string>
-#include <map>
 
 namespace Stagehand
 {
-	const ProcessMap ConstructProcessMap()
+	template<>
+	ProcessMap GetFuncMap<Processor>()
 	{
 		return
 		{
@@ -21,22 +22,11 @@ namespace Stagehand
 		};
 	}
 
-	Processor SelectProcessor(const filesystem::path& fileExtension, const ProcessMap& processMap)
+	template<>
+	Processor GetFallbackFunc<Processor>()
 	{
-		std::string extension = fileExtension.string();
-		if (processMap.contains(extension))
-		{
-			return processMap.at(extension);
-		}
-
 		return [](ProcessorData& data) {
 			std::cout << "No processor found for " << data.inputPath << "!\n";
 		};
-	}
-
-	Processor SelectProcessor(const filesystem::path& fileExtension)
-	{
-		const auto processMap = ConstructProcessMap();
-		return SelectProcessor(fileExtension, processMap);
 	}
 }

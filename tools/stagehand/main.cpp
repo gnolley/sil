@@ -20,13 +20,13 @@ namespace Stagehand
 	void ProcessFile(const filesystem::path& source, const filesystem::path& output)
 	{
 		auto inputExtension = source.extension();
-		auto streamBuilder = SelectStreamBuilder(inputExtension);
+		auto streamBuilder = SelectExtProcess<StreamBuilder>(inputExtension);
 
 		auto processData = ProcessorData{};
 		processData.inputPath = source;
 		processData.outputStream = streamBuilder(source, output);
 
-		Processor processor = SelectProcessor(inputExtension);
+		Processor processor = SelectExtProcess<Processor>(inputExtension);
 		processor(processData);
 
 		processData.outputStream.close();
@@ -35,13 +35,13 @@ namespace Stagehand
 	void ProcessFile(const filesystem::path& source, const filesystem::path& output, const BuilderMap& builderMap, const ProcessMap& processMap)
 	{
 		auto inputExtension = source.extension();
-		auto streamBuilder = SelectStreamBuilder(inputExtension, builderMap);
+		auto streamBuilder = SelectExtProcess<StreamBuilder>(inputExtension, builderMap);
 
 		auto processData = ProcessorData{};
 		processData.inputPath = source;
 		processData.outputStream = streamBuilder(source, output);
 
-		Processor processor = SelectProcessor(inputExtension, processMap);
+		Processor processor = SelectExtProcess<Processor>(inputExtension, processMap);
 		processor(processData);
 
 		processData.outputStream.close();
@@ -49,8 +49,8 @@ namespace Stagehand
 
 	void ProcessDirectory(const filesystem::path& directory, const filesystem::path& outputDirectory, bool recursive)
 	{
-		auto builderMap = ConstructBuilderMap();
-		auto processorMap = ConstructProcessMap();
+		auto builderMap = GetFuncMap<StreamBuilder>();
+		auto processorMap = GetFuncMap<Processor>();
 		
 		if (recursive)
 		{
