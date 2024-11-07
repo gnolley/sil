@@ -33,9 +33,15 @@ namespace Sil
 		
 		friend std::hash<Sil::SilId>;
 
+		bool IsEmpty() const { return _narrowId == 0; }
+		
+		static SilId Empty() {
+			return {};
+		}
+
 	private:
 		std::array<std::byte, 16> _id; // 128-bit hash
-		size_t _narrowId;
+		size_t _narrowId = 0;
 	};
 }
 

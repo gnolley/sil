@@ -25,7 +25,6 @@ namespace Sil
 		GLFWInstance _glfwInstance; // Must be before initialising graphics
 		Window _mainWindow;
 		RenderSubsystem _renderSubsystem;
-		Playbook _playbook;
 
 
 		void MainLoop();

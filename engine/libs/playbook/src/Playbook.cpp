@@ -5,7 +5,7 @@ namespace filesystem = std::filesystem;
 namespace Sil
 {
 
-	void Sil::Playbook::LoadBuiltinResources(const std::filesystem::path& path)
+	void Sil::Playbook::IndexAssetsAtPath(const std::filesystem::path& path)
 	{
 		if (filesystem::is_directory(path) == false)
 		{
@@ -18,10 +18,5 @@ namespace Sil
 			std::cout << entry.path().string() << ", ";
 		}
 		std::cout << "\n";
-	}
-
-	Asset& Playbook::GetAssetById(SilId& id)
-	{
-		return _assets[id];
 	}
 }

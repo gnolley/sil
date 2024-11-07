@@ -22,7 +22,7 @@ Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engine
 		_renderSubsystem(CreateRenderConfig(appConfig, engineConfig), _mainWindow)
 {
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
-	_playbook.LoadBuiltinResources(std::filesystem::relative(engineConfig.BuiltinAssetsRelativePath, std::filesystem::current_path()));
+	Playbook::IndexAssetsAtPath(std::filesystem::relative(engineConfig.BuiltinAssetsRelativePath, std::filesystem::current_path()));
 }
 
 // == Runtime
