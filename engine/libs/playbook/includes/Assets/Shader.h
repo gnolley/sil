@@ -4,8 +4,13 @@
 
 namespace Sil
 {
-	class Shader : Asset
+	class Shader : public Asset
 	{
+	public:
+		Shader(SilId id) 
+			: Asset(id)
+		{
+		}
 
 	};
 }

@@ -3,18 +3,23 @@
 #include <array>
 #include <cstdlib>
 #include <functional>
+#include <stdint.h>
 
 namespace Sil
 {
 	class SilId
 	{
 	public:
-		SilId() = default;
-		//SilId(std::string_view id);
+		SilId()
+			: _id{}
+		{
+		}
 
+		SilId(std::uint64_t a, std::uint64_t b);
+
+		static SilId NewId();
 		const std::string ToString() const;
-
-		//static SilId NewId();
+		bool operator== (const SilId& other) const;
 
 		// Hashes a name to a 128-bit id
 		static SilId FromName(std::string_view nameToHash);
@@ -29,15 +34,13 @@ namespace Sil
 			return _id.end();
 		}
 
-		bool operator== (const SilId& other) const;
-		
-		friend std::hash<Sil::SilId>;
-
 		bool IsEmpty() const { return _narrowId == 0; }
 		
 		static SilId Empty() {
 			return {};
 		}
+
+		friend std::hash<Sil::SilId>;
 
 	private:
 		std::array<std::byte, 16> _id; // 128-bit hash

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <iostream>
 
 #include "Asset.h"
 #include "AssetToken.h"
@@ -12,30 +13,29 @@ namespace Sil
 	template<AssetType TAsset>
 	class AssetHandler
 	{
+		void OnTokenRelease(const SilId& tokenId)
+		{
+			// do shit =(
+		}
+
 	public:
 
-		AssetHandler(TAsset* asset) 
-			: Asset(asset), Tokens{}
+		AssetHandler(TAsset* asset)
+			: _asset(asset)
 		{
 		}
 
 		const AssetToken<TAsset> DistributeToken()
 		{
-			return AssetToken
-			{
-				SilId::Empty(),
-				OnTokenRelease(),
-				true
-			};
+			SilId tokenId = SilId::NewId();
+			
+			auto token = AssetToken<TAsset>(tokenId, nullptr, [&](const SilId& id) { OnTokenRelease(id); });
+			return token;
 		}
 
 	private:
-		TAsset* Asset;
-		std::vector<AssetToken<TAsset>> Tokens;
+		TAsset* _asset;
+		std::vector<AssetToken<TAsset>> _tokens;
 
-		void OnTokenRelease(SilId tokenId)
-		{
-			// do stuff
-		}
 	};
 }

@@ -1,9 +1,11 @@
 #include "Playbook.h"
 #include <iostream>
+#include "PlaybookConcepts.h"
 namespace filesystem = std::filesystem;
 
 namespace Sil
 {
+	std::unordered_map<SilId, AssetLocation> Playbook::_indexedAssets;
 
 	void Sil::Playbook::IndexAssetsAtPath(const std::filesystem::path& path)
 	{
@@ -18,5 +20,8 @@ namespace Sil
 			std::cout << entry.path().string() << ", ";
 		}
 		std::cout << "\n";
+
+		auto id = SilId::FromName("SomeId");
+		_assetHandlers<Shader>.emplace(std::pair<SilId, AssetHandler<Shader>>{ id, AssetHandler<Shader>((Shader*)nullptr)});
 	}
 }

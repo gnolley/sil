@@ -9,8 +9,6 @@
 #include <unordered_map>
 #include <filesystem>
 
-#define PBAPI template<AssetType TAsset> static
-
 namespace Sil 
 {
 	class Playbook
@@ -19,7 +17,8 @@ namespace Sil
 
 		static void IndexAssetsAtPath(const std::filesystem::path& path);
 		
-		PBAPI AssetToken<TAsset> LoadAssetFromID(SilId id)
+		template<AssetType TAsset>
+		static const AssetToken<TAsset> LoadAssetFromID(SilId id)
 		{
 			if (_assetHandlers<TAsset>.contains(id))
 			{
@@ -34,14 +33,16 @@ namespace Sil
 				// Create handler
 			}
 
-			return AssetToken<TAsset>::Invalid();
+			return AssetToken<TAsset>::InvalidToken();
 		}
-
-
 
 	private:
 		static std::unordered_map<SilId, AssetLocation> _indexedAssets;
 
-		PBAPI std::unordered_map<SilId, AssetHandler<TAsset>> _assetHandlers;
+		template<AssetType TAsset> 
+		static std::unordered_map<SilId, AssetHandler<TAsset>> _assetHandlers;
 	};
+
+	template<AssetType TAsset>
+	std::unordered_map<SilId, AssetHandler<TAsset>> Playbook::_assetHandlers;
 }

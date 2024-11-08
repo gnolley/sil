@@ -22,7 +22,11 @@ Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engine
 		_renderSubsystem(CreateRenderConfig(appConfig, engineConfig), _mainWindow)
 {
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
+
 	Playbook::IndexAssetsAtPath(std::filesystem::relative(engineConfig.BuiltinAssetsRelativePath, std::filesystem::current_path()));
+
+	auto token = Playbook::LoadAssetFromID<Shader>(SilId::FromName("SomeId"));
+	LogInfo(std::format("Token issued: {}", token.IsValid()));
 }
 
 // == Runtime
