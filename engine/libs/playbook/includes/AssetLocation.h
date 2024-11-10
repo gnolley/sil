@@ -1,9 +1,10 @@
 #pragma once
+#include <filesystem>
 
 namespace Sil
 {
-	class AssetLocation
+	struct AssetLocation
 	{
-
+		std::filesystem::path Path;
 	};
 }

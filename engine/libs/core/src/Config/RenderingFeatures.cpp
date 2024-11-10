@@ -1,7 +1,8 @@
 #include "Config/RenderingFeatures.h"
-#include <stdexcept>
-#include <vulkan/vulkan_core.h>
 #include "Debug/Logger.h"
+#include <stdexcept>
+
+#define VK_KHR_SWAPCHAIN_EXTENSION_NAME "VK_KHR_swapchain"
 
 Sil::RenderingFeatures& Sil::RenderingFeatures::UseGraphics(bool useGraphics, bool onScreenRendering)
 {

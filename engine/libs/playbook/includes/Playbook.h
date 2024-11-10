@@ -1,10 +1,10 @@
 #pragma once
 #include "SilId.h"
-#include "PlaybookConcepts.h"
 #include "Asset.h"
-#include "AssetLocation.h"
 #include "AssetHandler.h"
-#include "Assets/Shader.h"
+#include "AssetLocation.h"
+#include "AssetProcessor.h"
+#include "PlaybookConcepts.h"
 
 #include <unordered_map>
 #include <filesystem>
@@ -22,15 +22,24 @@ namespace Sil
 		{
 			if (_assetHandlers<TAsset>.contains(id))
 			{
-				auto handler = _assetHandlers<TAsset>.at(id);
+				auto& handler = _assetHandlers<TAsset>.at(id);
 				return handler.DistributeToken();
 			}
 
 			if (_indexedAssets.contains(id))
 			{
-				// Create asset processor
+				auto processor = AssetProcessor<TAsset>();
+				TAsset* asset;
+
 				// Create asset
+				if (processor.ProcessAsset(_indexedAssets.at(id), asset) != ProcessResult::Success)
+				{
+					return AssetToken<TAsset>::InvalidToken();
+				}
+
 				// Create handler
+				_assetHandlers<TAsset>.emplace(std::pair<SilId, AssetHandler<TAsset>>{id, AssetHandler<TAsset>(asset) });
+				return _assetHandlers<TAsset>.at(id).DistributeToken();
 			}
 
 			return AssetToken<TAsset>::InvalidToken();

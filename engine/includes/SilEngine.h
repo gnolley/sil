@@ -6,7 +6,7 @@
 
 #include "Rendering/GLFWInstance.h"
 #include "Rendering/Window.h"
-#include "Subsystems/RenderSubsystem.h"
+#include "Mezzanine.h"
 #include "Playbook.h"
 
 #include <cstdint>
@@ -24,7 +24,7 @@ namespace Sil
 	private:
 		GLFWInstance _glfwInstance; // Must be before initialising graphics
 		Window _mainWindow;
-		RenderSubsystem _renderSubsystem;
+		Mezzanine _mezzanine;
 
 
 		void MainLoop();

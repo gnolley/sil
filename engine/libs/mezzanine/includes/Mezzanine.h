@@ -7,10 +7,10 @@
 
 namespace Sil
 {
-	class RenderSubsystem
+	class Mezzanine
 	{
 	public:
-		RenderSubsystem(const RenderConfig& config, const Window& window);
+		Mezzanine(const RenderConfig& config, const Window& window);
 
 	private:
 		GraphicsContext _graphicsContext;
