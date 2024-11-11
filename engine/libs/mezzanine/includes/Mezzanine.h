@@ -11,8 +11,12 @@ namespace Sil
 	{
 	public:
 		Mezzanine(const RenderConfig& config, const Window& window);
+		void DisplaySplashScreen();
 
+		static const GraphicsDevice& GetGraphicsDevice();
 	private:
 		GraphicsContext _graphicsContext;
+
+		static const Mezzanine* _instance;
 	};
 }

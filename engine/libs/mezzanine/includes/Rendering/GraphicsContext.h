@@ -21,6 +21,7 @@ namespace Sil
 
 		inline const RenderConfig& GetRenderConfig() const { return _config; };
 		inline const VkInstance& GetVkInstance() const { return _instance; }
+		inline const GraphicsDevice& GetDevice() const { return _device; }
 
 		inline const size_t NumEnabledExtensions() const { return _extensions.size(); }
 		inline const size_t NumEnabledValidationLayers() const { return _validationLayers.size(); }

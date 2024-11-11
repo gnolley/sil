@@ -3,11 +3,11 @@
 #include "Config/RenderingFeatures.h"
 #include "Debug/Logger.h"
 #include "Config/RenderingFeatures.h"
+#include "SilId.h"
 
 #include <iostream>
 #include <cassert>
 #include <format>
-#include "SilId.h"
 
 Sil::RenderConfig CreateRenderConfig(const Sil::AppConfig& appConfig, const Sil::EngineConfig& engineConfig)
 {
@@ -21,6 +21,7 @@ Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engine
 	: _glfwInstance(), _mainWindow(engineConfig.MainWindowWidth, engineConfig.MainWindowHeight, appConfig.ApplicationName),
 		_mezzanine(CreateRenderConfig(appConfig, engineConfig), _mainWindow)
 {
+	
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
 	Playbook::IndexAssetsAtPath(std::filesystem::relative(engineConfig.BuiltinAssetsRelativePath, std::filesystem::current_path()));
 }

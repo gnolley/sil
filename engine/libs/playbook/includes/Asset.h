@@ -6,7 +6,7 @@ namespace Sil
 	class Asset
 	{
 	public:
-		Asset(SilId id)
+		Asset(SilId& id)
 			: _id(id)
 		{}
 		
