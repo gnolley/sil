@@ -5,7 +5,7 @@
 
 namespace Sil
 {
-	void CreateShaderModule(SilId& id, GraphicsDevice& device, std::string_view byteCode, VkShaderModule* shaderModule)
+	void CreateShaderModule(const SilId& id, const GraphicsDevice& device, std::string_view byteCode, VkShaderModule* shaderModule)
 	{
 		auto createInfo = VkShaderModuleCreateInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -18,7 +18,7 @@ namespace Sil
 		}
 	}
 
-	VkShaderStageFlagBits StageTypeToVKStage(StageType stageType)
+	VkShaderStageFlagBits StageTypeToVKStage(const StageType stageType)
 	{
 		switch (stageType)
 		{
@@ -29,10 +29,10 @@ namespace Sil
 			return VK_SHADER_STAGE_FRAGMENT_BIT;
 		}
 
-		throw new std::runtime_error(std::format("Cannot conver StageType {} to Vk Stage Bit!", stageType));
+		throw new std::runtime_error(std::format("Cannot conver StageType {} to Vk Stage Bit!", static_cast<std::uint16_t>(stageType)));
 	}
 
-	void CreateShaderStage(SilId& id, StageType stageType, GraphicsDevice& device, VkShaderModule& module)
+	void CreateShaderStage(const StageType stageType, VkShaderModule& module)
 	{
 		VkPipelineShaderStageCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -41,10 +41,10 @@ namespace Sil
 		createInfo.pSpecializationInfo = nullptr;
 	}
 
-	ShaderStage::ShaderStage(SilId& id, StageType stageType, GraphicsDevice& device, std::string_view byteCode) : Asset(id)
+	ShaderStage::ShaderStage(const SilId& id, StageType stageType, const GraphicsDevice& device, std::string_view byteCode) : Asset(id)
 	{
 		CreateShaderModule(id, device, byteCode, &_shaderModule);
-		CreateShaderStage(id, stageType, device, _shaderModule);
+		CreateShaderStage(stageType, _shaderModule);
 
 		vkDestroyShaderModule(device.GetDevice(), _shaderModule, nullptr);
 	}

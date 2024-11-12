@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SilId.h"
+#include <vulkan/vulkan_core.h>
 
 namespace Sil
 {
@@ -40,6 +41,6 @@ namespace Sil
 		~Shader();
 
 	private:
-
+		VkPipelineLayout _pipelineLayout;
 	};
 }

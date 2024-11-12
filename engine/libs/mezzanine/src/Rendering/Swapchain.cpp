@@ -32,6 +32,7 @@ Sil::Swapchain::Swapchain(const GraphicsDevice& device, const Window& window,
 	}
 
 	_surfaceFormat = ChooseColorFormat(supportedFormats);
+	_targetFormat = _surfaceFormat.format;
 	_presentMode = ChoosePresentMode(presentModes, requiredFeatures, _surfaceCapabilities);
 	VkExtent2D extent = GetSwapchainExtent(_surfaceCapabilities, window);
 	std::uint32_t imageCount = GetSwapchainImageCount(_surfaceCapabilities, requiredFeatures);

@@ -1,9 +1,9 @@
 set(MEZZANINE_LIB_SRC 
- "Mezzanine.cpp" "Rendering/Window.cpp" "Rendering/Renderer.cpp"
+ "Mezzanine.cpp" "Rendering/Window.cpp" 
  "Rendering/GraphicsContext.cpp" "Debug/VulkanDebugAdaptor.cpp"
  "Rendering/GraphicsDevice.cpp" "Vulkan/VkDeviceSelector.cpp"
  "Vulkan/VkSurface.cpp" "Rendering/Swapchain.cpp"
- "Rendering/ShaderStage.cpp" "Rendering/Shader.cpp")
+ "Rendering/ShaderStage.cpp" "Rendering/Shader.cpp" "Rendering/RenderPass.cpp")
 
 add_library(${MEZZANINE_LIB_TARGET} STATIC ${MEZZANINE_LIB_SRC})
 

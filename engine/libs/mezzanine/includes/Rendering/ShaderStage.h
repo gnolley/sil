@@ -17,7 +17,7 @@ namespace Sil
 	class ShaderStage : public Asset
 	{
 	public:
-		ShaderStage(SilId& id, StageType stageType, GraphicsDevice& device, std::string_view byteCode) : Asset(id);
+		ShaderStage(const SilId& id, StageType stageType, const GraphicsDevice& device, std::string_view byteCode);
 		
 	private:
 		VkShaderModule _shaderModule;
@@ -34,12 +34,12 @@ namespace Sil
 				return ProcessResult::InvalidLocation;
 			}
 
-			std::ifstream stream = CreateFileStream(location);
-			std::stringstream ss();
+			std::ifstream stream = location.GetFileStream();
+			std::stringstream ss{};
 			ss << stream.rdbuf();
 
 			auto& device = Mezzanine::GetGraphicsDevice();
-			shaderModule = new ShaderStage(device, ss.str());
+			shaderModule = new ShaderStage(location.AssetId, StageType::Vertex, device, ss.str());
 
 			stream.close();
 

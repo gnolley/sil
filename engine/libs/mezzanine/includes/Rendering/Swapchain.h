@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Rendering/GraphicsDevice.h"
 #include "Rendering/Window.h"
+#include "Rendering/RenderTarget.h"
+#include "Rendering/GraphicsDevice.h"
+
 #include "Vulkan/VkSurface.h"
 #include "Config/RenderingFeatures.h"
 
@@ -9,11 +11,12 @@
 
 namespace Sil
 {
-	class Swapchain
+	class Swapchain : public RenderTarget
 	{
 	public:
 		Swapchain(const GraphicsDevice& device, const Window& window,
 			const VkSurface& surface, const RenderingFeatures& requiredFeatures);
+
 		~Swapchain();
 	
 		const VkSwapchainKHR& GetSwapchain() const

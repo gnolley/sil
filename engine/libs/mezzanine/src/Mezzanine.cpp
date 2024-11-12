@@ -5,6 +5,8 @@
 
 namespace Sil
 {
+	const Mezzanine* Mezzanine::_instance;
+
 	Mezzanine::Mezzanine(const RenderConfig& config, const Window& window)
 		: _graphicsContext(config, window)
 	{

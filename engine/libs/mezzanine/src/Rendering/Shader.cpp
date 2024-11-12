@@ -149,6 +149,7 @@ namespace Sil
 	{
 		// TODO: make better locator for mez
 		auto& device = Mezzanine::GetGraphicsDevice();
+		LogMessage(std::format("Keeping shader state from stipping {}", state.VertexShaderId.ToString()));
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo = GetPipelineLayoutCreateInfo();
 		if (vkCreatePipelineLayout(device.GetDevice(), &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS)

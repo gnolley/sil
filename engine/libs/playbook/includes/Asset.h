@@ -6,7 +6,7 @@ namespace Sil
 	class Asset
 	{
 	public:
-		Asset(SilId& id)
+		Asset(const SilId& id)
 			: _id(id)
 		{}
 		
@@ -14,6 +14,6 @@ namespace Sil
 
 
 	private:
-		SilId _id;
+		const SilId _id;
 	};
 }

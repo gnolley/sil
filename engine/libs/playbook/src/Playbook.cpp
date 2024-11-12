@@ -19,7 +19,7 @@ namespace Sil
 		for (auto& entry : filesystem::recursive_directory_iterator(path))
 		{
 			SilId id = SilId::FromName(path.filename().string());
-			_indexedAssets.emplace(std::pair<SilId, AssetLocation>{ id, AssetLocation{path} });
+			_indexedAssets.emplace(std::pair<SilId, AssetLocation>{ id, AssetLocation(id, path) });
 		}
 	}
 }
