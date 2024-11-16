@@ -22,6 +22,7 @@ namespace Sil
 			vkDestroyRenderPass(_device.GetDevice(), _renderPass, nullptr);
 		}
 
+		const ::VkRenderPass& GetRenderPass() const { return _renderPass; }
 	private:
 		const GraphicsDevice& _device;
 		::VkRenderPass _renderPass;

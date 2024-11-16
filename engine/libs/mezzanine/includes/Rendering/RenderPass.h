@@ -10,7 +10,10 @@ namespace Sil
 		RenderPass(const GraphicsContext& graphicsContext);
 
 		RenderPass(RenderPass& other) = delete;
+
+		const VkRenderPass& GetHandle() const { return _renderPass; }
 	private:
+
 		VkRenderPass _renderPass;
 	};
 }

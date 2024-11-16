@@ -1,7 +1,7 @@
 set(CORE_LIB_SRC 
  "Debug/Logger.cpp"  
  "Config/RenderingFeatures.cpp"
-)
+ "../includes/Archivist.h")
 
 add_library(${CORE_LIB_TARGET} STATIC ${CORE_LIB_SRC})
 

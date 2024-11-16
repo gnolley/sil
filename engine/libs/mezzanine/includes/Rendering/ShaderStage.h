@@ -18,7 +18,7 @@ namespace Sil
 	{
 	public:
 		ShaderStage(const SilId& id, StageType stageType, const GraphicsDevice& device, std::string_view byteCode);
-		
+		VkPipelineShaderStageCreateInfo GetPipelineStageCreateInfo() const;
 	private:
 		VkShaderModule _shaderModule;
 	};

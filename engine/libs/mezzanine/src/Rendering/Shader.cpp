@@ -1,8 +1,11 @@
 #include "Rendering/Shader.h"
+#include "Mezzanine.h"
+#include "Playbook.h"
+#include "Rendering/ShaderStage.h"
 #include <vulkan/vulkan_core.h>
 #include <vector>
 #include <stdint.h>
-#include "Mezzanine.h"
+#include <Archivist.h>
 
 namespace Sil
 {
@@ -18,7 +21,7 @@ namespace Sil
 		return info;
 	}
 
-	VkPipelineInputAssemblyStateCreateInfo GetInputAssembly()
+	VkPipelineInputAssemblyStateCreateInfo GetInputAssemblyState()
 	{
 		VkPipelineInputAssemblyStateCreateInfo info{};
 		info.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -116,7 +119,7 @@ namespace Sil
 		return VK_BLEND_OP_ADD;
 	}
 
-	VkPipelineColorBlendAttachmentState GetBlendState(const ShaderState& state)
+	VkPipelineColorBlendAttachmentState GetAttachmentBlendState(const ShaderState& state)
 	{
 		VkPipelineColorBlendAttachmentState blendState{};
 		blendState.colorBlendOp = BlendModeToOp(state.ColorBlend);
@@ -132,6 +135,19 @@ namespace Sil
 		return blendState;
 	}
 
+	VkPipelineColorBlendStateCreateInfo GetColorBlendState(const VkPipelineColorBlendAttachmentState* attachment)
+	{
+		VkPipelineColorBlendStateCreateInfo info{};
+		info.logicOpEnable = VK_FALSE;
+		info.logicOp = VK_LOGIC_OP_COPY;
+		info.attachmentCount = 1u;
+		info.pAttachments = attachment;
+		info.blendConstants[0] = 0.f;
+		info.blendConstants[1] = 0.f;
+		info.blendConstants[2] = 0.f;
+		info.blendConstants[3] = 0.f;
+	}
+
 	VkPipelineLayoutCreateInfo GetPipelineLayoutCreateInfo()
 	{
 		// TODO: allow for uniforms to be set up in shader
@@ -145,22 +161,59 @@ namespace Sil
 		return info;
 	}
 
-	Shader::Shader(const ShaderState& state)
+	void GetShaderStages(const ShaderState& state, std::vector<VkPipelineShaderStageCreateInfo>& stages)
 	{
-		// TODO: make better locator for mez
-		auto& device = Mezzanine::GetGraphicsDevice();
-		LogMessage(std::format("Keeping shader state from stipping {}", state.VertexShaderId.ToString()));
+		AssetToken<ShaderStage> vertex = Playbook::LoadAssetFromID<ShaderStage>(state.VertexShaderId);
+		AssetToken<ShaderStage> fragment = Playbook::LoadAssetFromID<ShaderStage>(state.FragmentShaderId);
 
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo = GetPipelineLayoutCreateInfo();
-		if (vkCreatePipelineLayout(device.GetDevice(), &pipelineLayoutInfo, nullptr, &_pipelineLayout) != VK_SUCCESS)
-		{
-			throw std::runtime_error("Cannot create shader! Pipeline layout failed.");
-		}
+		stages.push_back(vertex.Asset->GetPipelineStageCreateInfo());
+		stages.push_back(fragment.Asset->GetPipelineStageCreateInfo());
+	}
+
+	VkGraphicsPipelineCreateInfo GetShaderPipelineInfo(const ShaderState& state, const VkPipelineLayout& layout)
+	{
+		auto locator = ProjectArchivist.Retreive<GraphicsLocator>();
+		const auto& colorPass = locator->GetColorPass();
+
+		std::vector<VkPipelineShaderStageCreateInfo> stages{};
+		GetShaderStages(state, stages);
+		auto vertexInputState = GetVertextInputState();
+		auto inputAssemblyState = GetInputAssemblyState();
+		auto viewportState = GetViewportStateCreateInfo();
+		auto rasterizationState = GetRasterizationStateCreateInfo(state);
+		auto multisampleState = GetMultisampleStateCreateInfo();
+		auto attachmentBlendState = GetAttachmentBlendState(state);
+		auto colorBlendState = GetColorBlendState(&attachmentBlendState);
+		std::vector<VkDynamicState> dynamicStates{};
+		auto dynamicState = GetDynamicState(dynamicStates);
+
+		VkGraphicsPipelineCreateInfo info{};
+		info.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+		info.stageCount = static_cast<std::uint32_t>(stages.size());
+		info.pStages = stages.data();
+		info.pVertexInputState = &vertexInputState;
+		info.pInputAssemblyState = &inputAssemblyState;
+		info.pViewportState = &viewportState;
+		info.pRasterizationState = &rasterizationState;
+		info.pMultisampleState = &multisampleState;
+		info.pDepthStencilState = nullptr;
+		info.pColorBlendState = &colorBlendState;
+		info.pDynamicState = &dynamicState;
+		info.layout = layout.GetLayout();
+		info.renderPass = colorPass.GetHandle().GetRenderPass();
+		info.subpass = 0;
+		info.basePipelineHandle = VK_NULL_HANDLE;
+		info.basePipelineIndex = -1;
+	}
+
+	Shader::Shader(const ShaderState& state, const GraphicsContext& context)
+		: _pipelineLayout(GetPipelineLayoutCreateInfo(), context.GetDevice()), 
+		  _pipeline(GetShaderPipelineInfo(state, _pipelineLayout), context.GetDevice())
+	{		
+		// TODO: Refactor to fix invalid mem issues when creating pipeline.
 	}
 
 	Shader::~Shader()
 	{
-		auto& device = Mezzanine::GetGraphicsDevice();
-		vkDestroyPipelineLayout(device.GetDevice(), _pipelineLayout, nullptr);
 	}
 }

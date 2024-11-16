@@ -1,6 +1,8 @@
 #pragma once
 
 #include "SilId.h"
+#include "Vulkan/VkPipelineLayout.h"
+#include "Vulkan/VkGraphicsPipeline.h"
 #include <vulkan/vulkan_core.h>
 
 namespace Sil
@@ -37,10 +39,11 @@ namespace Sil
 	class Shader
 	{
 	public:
-		Shader(const ShaderState& state);
+		Shader(const ShaderState& state, const GraphicsContext& context);
 		~Shader();
 
 	private:
 		VkPipelineLayout _pipelineLayout;
+		VkGraphicsPipeline _pipeline;
 	};
 }

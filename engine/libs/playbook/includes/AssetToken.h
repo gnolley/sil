@@ -30,7 +30,7 @@ namespace Sil
 			}
 		}
 
-		const TAsset* const PAsset;
+		const TAsset* const Asset;
 		bool IsValid() const { return _isValid; }
 
 		static AssetToken InvalidToken()
