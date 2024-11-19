@@ -8,12 +8,13 @@ namespace Sil
 	class VkGraphicsPipeline
 	{
 	public:
-		VkGraphicsPipeline(VkGraphicsPipelineCreateInfo& info, const GraphicsDevice& device)
+		VkGraphicsPipeline(const VkGraphicsPipelineCreateInfo& info, const GraphicsDevice& device)
 			: _device(device)
 		{
-			if (vkCreateGraphicsPipelines(device.GetDevice(), VK_NULL_HANDLE, 1u, &info, nullptr, &_pipeline) != VK_SUCCESS)
+			if (vkCreateGraphicsPipelines(device.GetDevice(), VK_NULL_HANDLE, 1u, &info, nullptr, &_pipeline)
+				!= VK_SUCCESS)
 			{
-				std::runtime_error("Error while creating graphics pipeline!");
+				throw std::runtime_error("Error while creating graphics pipeline!");
 			}
 		}
 	private:

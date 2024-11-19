@@ -1,13 +1,14 @@
 #pragma once
 
 #include <vulkan/vulkan_core.h>
+#include "Rendering/GraphicsDevice.h"
 
 namespace Sil
 {
 	class VkPipelineLayout
 	{
 	public:
-		VkPipelineLayout(VkPipelineLayoutCreateInfo& info, const GraphicsDevice& device)
+		VkPipelineLayout(VkPipelineLayoutCreateInfo info, const GraphicsDevice& device)
 			: _device(device)
 		{
 			if (vkCreatePipelineLayout(device.GetDevice(), &info, nullptr, &_pipelineLayout) != VK_SUCCESS)

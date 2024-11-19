@@ -3,12 +3,11 @@
 #define XXH_INLINE_ALL
 #include "xxhash.h"
 
-#include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <sstream>
 #include <random>
 
-const XXH64_hash_t SEED = 1234;
+constexpr XXH64_hash_t SEED = 1234;
 
 //Note: It is assumed the data is 128-bits
 namespace Sil

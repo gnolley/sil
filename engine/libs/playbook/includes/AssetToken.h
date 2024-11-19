@@ -12,13 +12,15 @@ namespace Sil
 	class AssetToken
 	{
 	public:
-		AssetToken(SilId id, TAsset* asset, std::function<void(const SilId&)> releaseFunction)
-			: _id(id), PAsset(asset), _releaseToken(releaseFunction), _isValid(true)
+		AssetToken(const SilId& id, TAsset* asset, std::function<void(const SilId&)> releaseFunction)
+			: _id(id), _asset(asset), _releaseToken(releaseFunction), _isValid(true)
 		{
 		}
 
+		AssetToken(const AssetToken& other) = delete;
+
 		AssetToken()
-			: _id(SilId::Empty()), PAsset(nullptr), _isValid(false)
+			: _id(SilId::Empty()), _asset(nullptr), _releaseToken(std::nullopt), _isValid(false)
 		{
 		}
 
@@ -30,7 +32,10 @@ namespace Sil
 			}
 		}
 
-		const TAsset* const Asset;
+		const SilId& Id() const { return _id; }
+
+		const TAsset* Asset() const { return _asset; }
+
 		bool IsValid() const { return _isValid; }
 
 		static AssetToken InvalidToken()
@@ -40,7 +45,9 @@ namespace Sil
 
 	private:
 		const SilId _id;
-		const std::optional<std::function<void(const SilId&)>> _releaseToken;
+		const TAsset* _asset;
+
+		std::optional<std::function<void(const SilId&)>> _releaseToken;
 		bool _isValid;
 	};
 }

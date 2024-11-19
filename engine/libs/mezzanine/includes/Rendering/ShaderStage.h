@@ -1,7 +1,10 @@
 #pragma once
 #include "AssetProcessor.h"
-#include "Mezzanine.h"
 #include "GraphicsDevice.h"
+#include "Archivist.h"
+#include "GraphicsLocator.h"
+#include "Vulkan/VkShaderModule.h"
+
 #include <sstream>
 #include <string_view>
 #include <vulkan/vulkan_core.h>
@@ -19,14 +22,16 @@ namespace Sil
 	public:
 		ShaderStage(const SilId& id, StageType stageType, const GraphicsDevice& device, std::string_view byteCode);
 		VkPipelineShaderStageCreateInfo GetPipelineStageCreateInfo() const;
+
 	private:
 		VkShaderModule _shaderModule;
+		StageType _stageType;
 	};
-
 
 	template<>
 	class AssetProcessor<ShaderStage>
 	{
+	public:
 		ProcessResult ProcessAsset(const AssetLocation& location, ShaderStage* shaderModule)
 		{
 			if (location.Path.extension() != ".spv")
@@ -38,8 +43,9 @@ namespace Sil
 			std::stringstream ss{};
 			ss << stream.rdbuf();
 
-			auto& device = Mezzanine::GetGraphicsDevice();
-			shaderModule = new ShaderStage(location.AssetId, StageType::Vertex, device, ss.str());
+			auto locator = ProjectArchivist.Retrieve<GraphicsLocator>();
+			auto& device = locator->GetContext().GetDevice();
+			shaderModule = new ShaderStage(location.AssetId, Vertex, device, ss.str());
 
 			stream.close();
 

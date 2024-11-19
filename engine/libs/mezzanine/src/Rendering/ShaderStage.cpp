@@ -5,17 +5,14 @@
 
 namespace Sil
 {
-	void CreateShaderModule(const SilId& id, const GraphicsDevice& device, std::string_view byteCode, VkShaderModule* shaderModule)
+	VkShaderModuleCreateInfo GetShaderModuleCreateInfo(const std::string_view byteCode)
 	{
-		auto createInfo = VkShaderModuleCreateInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-		createInfo.codeSize = byteCode.size();
-		createInfo.pCode = reinterpret_cast<const std::uint32_t*>(byteCode.data());
+		auto info = VkShaderModuleCreateInfo{};
+		info.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		info.codeSize = byteCode.size();
+		info.pCode = reinterpret_cast<const std::uint32_t*>(byteCode.data());
 
-		if (vkCreateShaderModule(device.GetDevice(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
-		{
-			throw std::runtime_error(std::format("Failed to create shader module ", id.ToString()));
-		}
+		return info;
 	}
 
 	VkShaderStageFlagBits StageTypeToVKStage(const StageType stageType)
@@ -29,23 +26,22 @@ namespace Sil
 			return VK_SHADER_STAGE_FRAGMENT_BIT;
 		}
 
-		throw new std::runtime_error(std::format("Cannot conver StageType {} to Vk Stage Bit!", static_cast<std::uint16_t>(stageType)));
+		throw std::runtime_error(std::format("Cannot convert StageType {} to Vk Stage Bit!", static_cast<std::uint16_t>(stageType)));
 	}
 
-	void CreateShaderStage(const StageType stageType, VkShaderModule& module)
+	ShaderStage::ShaderStage(const SilId& id, const StageType stageType, const GraphicsDevice& device, std::string_view byteCode)
+	: Asset(id), _shaderModule(GetShaderModuleCreateInfo(byteCode), device), _stageType(stageType)
 	{
-		VkPipelineShaderStageCreateInfo createInfo{};
-		createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-		createInfo.stage = StageTypeToVKStage(stageType);
-		createInfo.module = module;
-		createInfo.pSpecializationInfo = nullptr;
 	}
 
-	ShaderStage::ShaderStage(const SilId& id, StageType stageType, const GraphicsDevice& device, std::string_view byteCode) : Asset(id)
+	VkPipelineShaderStageCreateInfo ShaderStage::GetPipelineStageCreateInfo() const
 	{
-		CreateShaderModule(id, device, byteCode, &_shaderModule);
-		CreateShaderStage(stageType, _shaderModule);
+		VkPipelineShaderStageCreateInfo info{};
+		info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+		info.stage = StageTypeToVKStage(_stageType);
+		info.module = _shaderModule.GetModule();
+		info.pSpecializationInfo = nullptr;
 
-		vkDestroyShaderModule(device.GetDevice(), _shaderModule, nullptr);
+		return info;
 	}
 }

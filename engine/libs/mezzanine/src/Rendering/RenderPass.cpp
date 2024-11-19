@@ -9,7 +9,20 @@ namespace Sil
 		Depth,
 	};
 
-	void GetAttachment(const RenderTarget* target, AttachmentType attchmentType, VkAttachmentDescription& description, VkAttachmentReference& ref)
+	VkImageLayout GetImageLayout(const AttachmentType type)
+	{
+		switch (type)
+		{
+			case Color:
+				return VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			case Depth:
+				return VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+		}
+
+		return VK_IMAGE_LAYOUT_UNDEFINED;
+	}
+
+	void GetAttachment(const RenderTarget* target, const AttachmentType attachmentType, VkAttachmentDescription& description, VkAttachmentReference& ref)
 	{
 		description.format = target->GetFormat();
 		description.samples = VK_SAMPLE_COUNT_1_BIT;
@@ -21,7 +34,7 @@ namespace Sil
 		description.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 		ref.attachment = 0;
-		ref.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+		ref.layout = GetImageLayout(attachmentType);
 	}
 
 	VkRenderPassCreateInfo ConfigurePass(const GraphicsContext& context)
@@ -31,12 +44,12 @@ namespace Sil
 		auto& swapchain = context.GetSwapchain();
 		GetAttachment(&swapchain, AttachmentType::Color, colorAttachment, attachmentRef);
 
-		VkSubpassDescription subpassDescription{};
-		subpassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subpassDescription.inputAttachmentCount = 0;
-		subpassDescription.pInputAttachments = nullptr;
-		subpassDescription.colorAttachmentCount = 1;
-		subpassDescription.pColorAttachments = &attachmentRef;
+		VkSubpassDescription subPassDescription{};
+		subPassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+		subPassDescription.inputAttachmentCount = 0;
+		subPassDescription.pInputAttachments = nullptr;
+		subPassDescription.colorAttachmentCount = 1;
+		subPassDescription.pColorAttachments = &attachmentRef;
 
 		// TODO: create a way to customise this.
 		VkRenderPassCreateInfo info{};
@@ -44,7 +57,7 @@ namespace Sil
 		info.attachmentCount = 1;
 		info.pAttachments = &colorAttachment;
 		info.subpassCount = 1;
-		info.pSubpasses = &subpassDescription;
+		info.pSubpasses = &subPassDescription;
 
 		return info;
 	}

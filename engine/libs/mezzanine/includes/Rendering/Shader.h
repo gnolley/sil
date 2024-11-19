@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SilId.h"
+#include "Rendering/GraphicsContext.h"
 #include "Vulkan/VkPipelineLayout.h"
 #include "Vulkan/VkGraphicsPipeline.h"
 #include <vulkan/vulkan_core.h>

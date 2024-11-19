@@ -12,8 +12,8 @@ namespace Sil
 		{
 		}
 
-		const GraphicsContext& GetContext() const { return _context; }
-		const RenderPass& GetColorPass() const { return _colorPass; }
+		[[nodiscard]] const GraphicsContext& GetContext() const { return _context; }
+		[[nodiscard]] const RenderPass& GetColorPass() const { return _colorPass; }
 
 	private:
 		const GraphicsContext& _context;

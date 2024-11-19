@@ -18,7 +18,7 @@ namespace Sil
 		static void IndexAssetsAtPath(const std::filesystem::path& path);
 		
 		template<AssetType TAsset>
-		static const AssetToken<TAsset> LoadAssetFromID(SilId id)
+		static AssetToken<TAsset> LoadAssetFromID(SilId id)
 		{
 			if (_assetHandlers<TAsset>.contains(id))
 			{

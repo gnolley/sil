@@ -4,7 +4,7 @@
 #include "Rendering/ShaderStage.h"
 #include <vulkan/vulkan_core.h>
 #include <vector>
-#include <stdint.h>
+#include <cstdint>
 #include <Archivist.h>
 
 namespace Sil
@@ -146,6 +146,8 @@ namespace Sil
 		info.blendConstants[1] = 0.f;
 		info.blendConstants[2] = 0.f;
 		info.blendConstants[3] = 0.f;
+
+		return info;
 	}
 
 	VkPipelineLayoutCreateInfo GetPipelineLayoutCreateInfo()
@@ -166,13 +168,13 @@ namespace Sil
 		AssetToken<ShaderStage> vertex = Playbook::LoadAssetFromID<ShaderStage>(state.VertexShaderId);
 		AssetToken<ShaderStage> fragment = Playbook::LoadAssetFromID<ShaderStage>(state.FragmentShaderId);
 
-		stages.push_back(vertex.Asset->GetPipelineStageCreateInfo());
-		stages.push_back(fragment.Asset->GetPipelineStageCreateInfo());
+		stages.push_back(vertex.Asset()->GetPipelineStageCreateInfo());
+		stages.push_back(fragment.Asset()->GetPipelineStageCreateInfo());
 	}
 
 	VkGraphicsPipelineCreateInfo GetShaderPipelineInfo(const ShaderState& state, const VkPipelineLayout& layout)
 	{
-		auto locator = ProjectArchivist.Retreive<GraphicsLocator>();
+		auto locator = ProjectArchivist.Retrieve<GraphicsLocator>();
 		const auto& colorPass = locator->GetColorPass();
 
 		std::vector<VkPipelineShaderStageCreateInfo> stages{};
@@ -204,6 +206,8 @@ namespace Sil
 		info.subpass = 0;
 		info.basePipelineHandle = VK_NULL_HANDLE;
 		info.basePipelineIndex = -1;
+
+		return info;
 	}
 
 	Shader::Shader(const ShaderState& state, const GraphicsContext& context)
