@@ -129,6 +129,7 @@ namespace Sil
 
     	std::vector<VkPipelineShaderStageCreateInfo> stageInfos{};
     	GetShaderStagesCreateInfos(stages, stageInfos);
+
     	auto vertexInputState = GetVertextInputState();
     	auto inputAssemblyState = GetInputAssemblyState();
     	auto viewportState = GetViewportStateCreateInfo();

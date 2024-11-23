@@ -25,8 +25,8 @@ namespace Sil
 	void GetAttachments(const RenderTarget* target, const AttachmentType attachmentType,
 		std::vector<VkAttachmentDescription>& descriptions, std::vector<VkAttachmentReference>& refs)
 	{
-		descriptions = std::vector<VkAttachmentDescription>(1u);
-		refs = std::vector<VkAttachmentReference>(1u);
+		descriptions = std::vector<VkAttachmentDescription> { 1 };
+		refs = std::vector<VkAttachmentReference> { 1 };
 
 		descriptions[0].format = target->GetFormat();
 		descriptions[0].samples = VK_SAMPLE_COUNT_1_BIT;
@@ -34,7 +34,7 @@ namespace Sil
 		descriptions[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 		descriptions[0].stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
 		descriptions[0].stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-		descriptions[0].initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+		descriptions[0].initialLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;;
 		descriptions[0].finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
 		refs[0].attachment = 0;
