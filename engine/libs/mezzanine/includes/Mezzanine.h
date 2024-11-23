@@ -19,7 +19,5 @@ namespace Sil
 		GraphicsContext _graphicsContext;
 		RenderPass _colorPass;
 		std::shared_ptr<GraphicsLocator> _locator;
-
-		static const Mezzanine* _instance;
 	};
 }

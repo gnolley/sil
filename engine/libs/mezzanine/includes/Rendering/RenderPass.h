@@ -3,6 +3,8 @@
 #include "Rendering/GraphicsDevice.h"
 #include "Rendering/GraphicsContext.h"
 
+#include <vector>
+
 namespace Sil
 {
 	class RenderPass {
@@ -14,6 +16,11 @@ namespace Sil
 		const VkRenderPass& GetHandle() const { return _renderPass; }
 	private:
 
+		VkRenderPassCreateInfo ConfigurePass(const GraphicsContext& context);
+
 		VkRenderPass _renderPass;
+		std::vector<VkAttachmentDescription> _attachments;
+		std::vector<VkAttachmentReference> _attachmentReferences;
+		std::vector<VkSubpassDescription> _subpasses;
 	};
 }
