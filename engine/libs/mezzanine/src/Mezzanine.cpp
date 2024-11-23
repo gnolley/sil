@@ -3,7 +3,11 @@
 #include <iostream>
 #include <format>
 #include <Archivist.h>
+#include <AssetToken.h>
 #include <memory>
+#include <Playbook.h>
+
+#include "Rendering/Shader.h"
 
 namespace Sil
 {
@@ -19,6 +23,14 @@ namespace Sil
 
 	void Mezzanine::DisplaySplashScreen()
 	{
-
+		Shader splashScreenShader = Shader( {
+			SilId::FromName("SplashScreen_frag.spv"),
+			SilId::FromName("SplashScreen_vert.spv"),
+			CullMode::Back,
+			false,
+			BlendMode::Additive,
+			BlendMode::Additive,
+			0.f
+		}, _graphicsContext);
 	}
 }
