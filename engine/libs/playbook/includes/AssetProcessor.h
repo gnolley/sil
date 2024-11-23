@@ -6,7 +6,7 @@
 
 namespace Sil
 {
-	enum ProcessResult
+	enum ProcessStatus
 	{
 		Success,
 		Failure,
@@ -15,12 +15,22 @@ namespace Sil
 	};
 
 	template<AssetType TAsset>
+	struct ProcessResult
+	{
+		ProcessStatus Status;
+		TAsset* Asset;
+	};
+
+	template<AssetType TAsset>
 	class AssetProcessor
 	{
 	public:
-		ProcessResult ProcessAsset(const AssetLocation& location, TAsset* asset)
+		ProcessResult<TAsset> ProcessAsset(const AssetLocation& location)
 		{
-			return ProcessResult::NoProcessor;
+			return {
+				ProcessStatus::NoProcessor,
+				nullptr
+			};
 		}
 
 	protected:

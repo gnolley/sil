@@ -24,6 +24,7 @@ Sil::SilEngine::SilEngine(const AppConfig& appConfig, const EngineConfig& engine
 	
 	LogMessage(std::format("Initialising Engine. {0}", engineConfig.EngineVersion.ToString()));
 	Playbook::IndexAssetsAtPath(std::filesystem::relative(engineConfig.BuiltinAssetsRelativePath, std::filesystem::current_path()));
+	_mezzanine.DisplaySplashScreen();
 }
 
 // == Runtime

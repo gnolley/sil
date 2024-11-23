@@ -29,17 +29,16 @@ namespace Sil
 			if (_indexedAssets.contains(id))
 			{
 				auto processor = AssetProcessor<TAsset>();
-				TAsset* asset;
 
 				// Create asset
-				if (processor.ProcessAsset(_indexedAssets.at(id), asset) != ProcessResult::Success)
+				if (auto result = processor.ProcessAsset(_indexedAssets.at(id)); result.Status == ProcessStatus::Success)
 				{
-					return AssetToken<TAsset>::InvalidToken();
+					// Create handler
+					_assetHandlers<TAsset>.emplace(std::pair<SilId, AssetHandler<TAsset>>{id, AssetHandler<TAsset>(result.Asset) });
+					return _assetHandlers<TAsset>.at(id).DistributeToken();
 				}
 
-				// Create handler
-				_assetHandlers<TAsset>.emplace(std::pair<SilId, AssetHandler<TAsset>>{id, AssetHandler<TAsset>(asset) });
-				return _assetHandlers<TAsset>.at(id).DistributeToken();
+				return AssetToken<TAsset>::InvalidToken();
 			}
 
 			return AssetToken<TAsset>::InvalidToken();
