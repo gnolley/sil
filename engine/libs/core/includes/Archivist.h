@@ -24,6 +24,8 @@ namespace Sil
 			{
 				_services.emplace(std::pair<std::type_index, std::shared_ptr<void>>(
 					id, std::static_pointer_cast<void>(service)));
+
+				return;
 			}
 
 			throw std::runtime_error(std::format("Cannot archive type {}, an object of that type is already archived.", id.name()));
