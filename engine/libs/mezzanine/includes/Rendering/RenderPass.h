@@ -18,9 +18,10 @@ namespace Sil
 
 		VkRenderPassCreateInfo ConfigurePass(const GraphicsContext& context);
 
-		VkRenderPass _renderPass;
 		std::vector<VkAttachmentDescription> _attachments;
 		std::vector<VkAttachmentReference> _attachmentReferences;
 		std::vector<VkSubpassDescription> _subpasses;
+
+		VkRenderPass _renderPass;
 	};
 }
