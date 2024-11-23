@@ -17,12 +17,21 @@ namespace Sil
 		{
 		}
 
-		AssetToken(const AssetToken& other) = delete;
-
 		AssetToken()
 			: _id(SilId::Empty()), _asset(nullptr), _releaseToken(std::nullopt), _isValid(false)
 		{
 		}
+
+		// Moves token ownership, invalidates moved token
+		AssetToken(const AssetToken&& other) noexcept
+			: _id(other._id), _asset(other._asset), _releaseToken(other._releaseToken), _isValid(other._isValid)
+		{
+			other._isValid = false;
+			other._releaseToken = std::nullopt;
+		}
+
+		// Never copy, only one token with this ID should exist.
+		AssetToken(const AssetToken& other) = delete;
 
 		~AssetToken()
 		{
@@ -32,16 +41,14 @@ namespace Sil
 			}
 		}
 
-		const SilId& Id() const { return _id; }
-
-		const TAsset* Asset() const { return _asset; }
-
-		bool IsValid() const { return _isValid; }
-
 		static AssetToken InvalidToken()
 		{
 			return AssetToken();
 		}
+
+		const SilId& Id() const { return _id; }
+		const TAsset* Asset() const { return _asset; }
+		bool IsValid() const { return _isValid; }
 
 	private:
 		const SilId _id;

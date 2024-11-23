@@ -46,8 +46,6 @@ namespace Sil
 
 		VkSubpassDescription subPassDescription{};
 		subPassDescription.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		subPassDescription.inputAttachmentCount = 0;
-		subPassDescription.pInputAttachments = nullptr;
 		subPassDescription.colorAttachmentCount = 1;
 		subPassDescription.pColorAttachments = &attachmentRef;
 

@@ -1,10 +1,14 @@
 #pragma once
 
+#include <AssetToken.h>
+
 #include "SilId.h"
 #include "Rendering/GraphicsContext.h"
 #include "Vulkan/VkPipelineLayout.h"
 #include "Vulkan/VkGraphicsPipeline.h"
 #include <vulkan/vulkan_core.h>
+
+#include "ShaderStage.h"
 
 namespace Sil
 {
@@ -20,7 +24,7 @@ namespace Sil
 	enum BlendMode
 	{
 		Additive,
-		Substractive,
+		Subtractive,
 		Min,
 		Max,
 	};
@@ -45,6 +49,8 @@ namespace Sil
 
 	private:
 		VkPipelineLayout _pipelineLayout;
+		AssetToken<ShaderStage> _vertexShader;
+		AssetToken<ShaderStage> _fragmentShader;
 		VkGraphicsPipeline _pipeline;
 	};
 }

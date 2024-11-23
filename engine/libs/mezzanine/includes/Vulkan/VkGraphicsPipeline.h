@@ -1,24 +1,34 @@
 #pragma once
 #include <vulkan/vulkan_core.h>
+
 #include "Rendering/GraphicsDevice.h"
-#include <stdexcept>
+#include "Vulkan/VkPipelineLayout.h"
+#include "Rendering/ShaderStage.h"
 
 namespace Sil
 {
+	struct BlendInfo
+	{
+		bool Enabled = false;
+		VkBlendOp ColorBlend = VK_BLEND_OP_ADD;
+		VkBlendOp AlphaBlend = VK_BLEND_OP_ADD;
+	};
+
+	struct RasterizerInfo
+	{
+		VkCullModeFlags CullMode = VK_CULL_MODE_BACK_BIT;
+		float DepthBias = 1.f;
+	};
+
 	class VkGraphicsPipeline
 	{
 	public:
-		VkGraphicsPipeline(const VkGraphicsPipelineCreateInfo& info, const GraphicsDevice& device)
-			: _device(device)
-		{
-			if (vkCreateGraphicsPipelines(device.GetDevice(), VK_NULL_HANDLE, 1u, &info, nullptr, &_pipeline)
-				!= VK_SUCCESS)
-			{
-				throw std::runtime_error("Error while creating graphics pipeline!");
-			}
-		}
+		VkGraphicsPipeline(const GraphicsDevice& device, const VkPipelineLayout& layout, const std::vector<const ShaderStage*>& stages,
+			BlendInfo blendInfo, RasterizerInfo rasterizerInfo);
+
 	private:
-		VkPipeline _pipeline;
+
+		VkPipeline _pipeline { nullptr };
 		const GraphicsDevice& _device;
 	};
 }
