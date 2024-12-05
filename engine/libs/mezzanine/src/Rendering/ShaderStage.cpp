@@ -15,7 +15,7 @@ namespace Sil
 		return info;
 	}
 
-	VkShaderStageFlagBits StageTypeToVKStage(const StageType stageType)
+	VkShaderStageFlagBits StageTypeToVKStage(StageType stageType)
 	{
 		switch (stageType)
 		{
@@ -38,6 +38,7 @@ namespace Sil
 	{
 		VkPipelineShaderStageCreateInfo info{};
 		info.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+
 		info.stage = StageTypeToVKStage(_stageType);
 		info.module = _shaderModule.GetModule();
 		info.pSpecializationInfo = nullptr;
