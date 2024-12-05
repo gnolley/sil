@@ -10,7 +10,7 @@ endif()
 function(setup_target TARGET_NAME)
 
 	if(${ENABLE_WARNINGS})
-	    target_set_warnings(${TARGET_NAME} ${TARGET_NAME})
+	    target_set_warnings(${TARGET_NAME} ${ENABLE_WARNINGS_AS_ERRORS})
     endif()
 
     if(${ENABLE_LTO})

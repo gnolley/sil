@@ -26,6 +26,6 @@ function(target_set_warnings TARGET AS_ERRORS)
     endif()
 
     target_compile_options(${TARGET} PRIVATE ${WARNINGS})
-    message("Warnings: " /${WARNINGS})
+    message(${TARGET} " Warnings: " ${WARNINGS})
 
 endfunction()
