@@ -48,14 +48,14 @@ namespace Sil
 
 		_subpasses = std::vector<VkSubpassDescription>(1u);
 		_subpasses[0].pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
-		_subpasses[0].colorAttachmentCount = _attachmentReferences.size();
+		_subpasses[0].colorAttachmentCount = static_cast<uint32_t>(_attachmentReferences.size());
 		_subpasses[0].pColorAttachments = _attachmentReferences.data();
 
 		// TODO: create a way to customise this.
 		VkRenderPassCreateInfo info{};
 		info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
-		info.attachmentCount = _attachments.size();
-		info.subpassCount = _subpasses.size();
+		info.attachmentCount = static_cast<uint32_t>(_attachments.size());
+		info.subpassCount = static_cast<uint32_t>(_subpasses.size());
 		info.pAttachments = _attachments.data();
 		info.pSubpasses = _subpasses.data();
 
