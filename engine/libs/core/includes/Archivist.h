@@ -58,5 +58,5 @@ namespace Sil
 		std::unordered_map<std::type_index, std::shared_ptr<void>> _services;
 	};
 
-	static Archivist ProjectArchivist;
+	inline Archivist ProjectArchivist;
 }
