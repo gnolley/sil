@@ -24,8 +24,8 @@ namespace Sil
 		VkPipelineShaderStageCreateInfo GetPipelineStageCreateInfo() const;
 
 	private:
-		VkShaderModule _shaderModule;
 		StageType _stageType;
+		VkShaderModule _shaderModule;
 	};
 
 	template<>

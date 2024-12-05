@@ -30,7 +30,7 @@ namespace Sil
 	}
 
 	ShaderStage::ShaderStage(const SilId& id, const StageType stageType, const GraphicsDevice& device, std::string_view byteCode)
-	: Asset(id), _shaderModule(GetShaderModuleCreateInfo(byteCode), device), _stageType(stageType)
+	: Asset(id), _stageType(stageType), _shaderModule(GetShaderModuleCreateInfo(byteCode), device)
 	{
 	}
 
