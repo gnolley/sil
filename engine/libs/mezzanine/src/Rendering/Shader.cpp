@@ -61,7 +61,7 @@ namespace Sil
 		_vertexShader(Playbook::LoadAssetFromID<ShaderStage>(state.VertexShaderId)),
 		_fragmentShader(Playbook::LoadAssetFromID<ShaderStage>(state.FragmentShaderId)),
 		_pipeline(context.GetDevice(), _pipelineLayout,
-			std::initializer_list{_vertexShader.Asset(), _fragmentShader.Asset()},
+			std::vector<const ShaderStage*>{_vertexShader.Asset(), _fragmentShader.Asset()},
 			{state.EnableBlending, GetBlendOp(state.ColorBlend), GetBlendOp(state.AlphaBlend)},
 			{GetCullMode(state.CullFace), 1.f})
 	{
