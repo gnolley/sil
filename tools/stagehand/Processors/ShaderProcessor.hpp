@@ -35,15 +35,20 @@ namespace Stagehand
 		const shaderc::CompileOptions options{};
 
 		auto preprocessResult = compiler.PreprocessGlsl(shader, kind, name.c_str(), options);
-		std::string preprocessed(preprocessResult.begin(), preprocessResult.end());
-
-		auto compileResult = compiler.CompileGlslToSpv(preprocessed, shaderc_shader_kind::shaderc_glsl_default_vertex_shader, name.c_str(), options);
-		if (compileResult.GetCompilationStatus() != shaderc_compilation_status::shaderc_compilation_status_success)
+		if (preprocessResult.GetCompilationStatus() != shaderc_compilation_status_success)
 		{
-			std::cout << "Error compiling shader " << name << ": " << compileResult.GetErrorMessage() << "\n";
+			throw std::runtime_error(std::format("Preprocessor failed on shader {}. Reason: {}", name, preprocessResult.GetErrorMessage()));
 		}
 
-		output = { compileResult.begin(), compileResult.end() };
+		std::string shaderSource{ preprocessResult.begin(), preprocessResult.end() };
+
+		auto compileResult = compiler.CompileGlslToSpv(shaderSource, shaderc_shader_kind::shaderc_glsl_default_vertex_shader, name.c_str(), options);
+		if (compileResult.GetCompilationStatus() != shaderc_compilation_status_success)
+		{
+			throw std::runtime_error(std::format("Compiler failed on shader {}. Reason {}", name, compileResult.GetErrorMessage()));
+		}
+
+		output = std::string { compileResult.begin(), compileResult.end() };
 	}
 
 	inline void ShaderProcessor(ProcessorData& data, const shaderc_shader_kind kind)
